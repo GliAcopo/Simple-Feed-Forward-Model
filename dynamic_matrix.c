@@ -29,7 +29,7 @@ float** create_matrix_float(int rows, int columns){
     return(matrix);
 }
 
-void init_matrix_to_float_value(float** matrix_pointer, int rows, int columns, float value){
+int init_matrix_to_float_value(float** matrix_pointer, int rows, int columns, float value){
     /* initialize the given matrix to a given float value
     :return: 0 if everything is correct, -1 if something went wrong*/
 
@@ -38,7 +38,7 @@ void init_matrix_to_float_value(float** matrix_pointer, int rows, int columns, f
             matrix_pointer[i][j] = value;
         }
     }
-
+    return(0);
 }
 
 void free_float_matrix(float** matrix_pointer, int rows){
@@ -47,9 +47,11 @@ void free_float_matrix(float** matrix_pointer, int rows){
     for (int i = 0; i < rows; i++){
         free(matrix_pointer[i]);
     }
+
 }
 
 void print_matrix_float(float** matrix_pointer, int rows, int columns){
+    printf("\n");
     if (matrix_pointer != NULL){
         for (int i = 0; i < rows; i++){
             if (matrix_pointer[i] == NULL){
@@ -64,6 +66,7 @@ void print_matrix_float(float** matrix_pointer, int rows, int columns){
     } else {
         printf("\n--- invalid matrix pointer ---\n");
     }
+    printf("\n");
 }
 
 int main(int argc, char **argv){
@@ -72,9 +75,10 @@ int main(int argc, char **argv){
 
     float** matrix = create_matrix_float(i, j);
     print_matrix_float(matrix, i, j);
-    init_matrix_to_float_value(matrix, i, j, 0.0);
+    init_matrix_to_float_value(matrix, i, j, 0.1);
     print_matrix_float(matrix, i, j);
     free_float_matrix(matrix, i);
+    matrix = NULL;
     print_matrix_float(matrix, i, j);
 
     return(0);
