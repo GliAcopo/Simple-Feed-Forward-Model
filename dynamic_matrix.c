@@ -49,3 +49,17 @@ void free_float_matrix(float** matrix_pointer, int rows){
     }
 }
 
+void print_matrix_float(float** matrix_pointer, int rows, int columns){
+    for (int i = 0; i < rows; i++){
+        for (int j = 0; i < columns; i++){
+            printf(" %f ", matrix_pointer[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+int main(int argc, char **argv){
+    float** matrix = create_matrix_float(16, 16);
+
+    return(0);
+}
