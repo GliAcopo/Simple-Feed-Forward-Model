@@ -19,7 +19,7 @@ float** create_matrix_float(int rows, int columns){
     }
 
     // Allocate mem for row values
-    for (int i = 0; i < columns; i++){
+    for (int i = 0; i < rows; i++){
         matrix[i] = (float *)malloc(columns * sizeof(float));
         if (matrix[i] == NULL){
             printf("Error in mem allocation for column %d\n", i);
@@ -29,7 +29,7 @@ float** create_matrix_float(int rows, int columns){
     return(matrix);
 }
 
-int init_matrix_to_float_value(float** matrix_pointer, int rows, int columns, float value){
+void init_matrix_to_float_value(float** matrix_pointer, int rows, int columns, float value){
     /* initialize the given matrix to a given float value
     :return: 0 if everything is correct, -1 if something went wrong*/
 
@@ -50,16 +50,32 @@ void free_float_matrix(float** matrix_pointer, int rows){
 }
 
 void print_matrix_float(float** matrix_pointer, int rows, int columns){
-    for (int i = 0; i < rows; i++){
-        for (int j = 0; i < columns; i++){
-            printf(" %f ", matrix_pointer[i][j]);
+    if (matrix_pointer != NULL){
+        for (int i = 0; i < rows; i++){
+            if (matrix_pointer[i] == NULL){
+                    printf("--- NULL ---"); // Prints null if a null pointer is found
+            } else {
+                for (int j = 0; j < columns; j++){
+                    printf("%f ", matrix_pointer[i][j]);
+                }
+            }
+        printf("\n");   // newline for column row
         }
-        printf("\n");
+    } else {
+        printf("\n--- invalid matrix pointer ---\n");
     }
 }
 
 int main(int argc, char **argv){
-    float** matrix = create_matrix_float(16, 16);
+    int i = 2;
+    int j = i;
+
+    float** matrix = create_matrix_float(i, j);
+    print_matrix_float(matrix, i, j);
+    init_matrix_to_float_value(matrix, i, j, 0.0);
+    print_matrix_float(matrix, i, j);
+    free_float_matrix(matrix, i);
+    print_matrix_float(matrix, i, j);
 
     return(0);
 }
