@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "matrix.h"
 
 //  TODO I should probably make a file with the data structure definitions.
 //  TODO Should I add a different file containing the functions to every layer?
