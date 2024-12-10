@@ -17,7 +17,6 @@ float** create_adj_matrix_float_square(int layers, int nodes_per_layer){
         printf("\n check_if_all_elements_of_matrix_are_equal_to_value returned 0 \n");
         return(NULL);
     }
-
     return(matrix_pointer);
 }
 

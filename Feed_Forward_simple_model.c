@@ -37,16 +37,15 @@ typedef struct {
 } neuron; 
 */
 
-#define LIVELLI 4
-#define NODI_PER_LIVELLO 4
-
 
 void train(int feedback){
     //  TODO Training function goes here.
 }
 
 int main(int argc, char **argv){
-    //  TODO Calling logic goes here.
+    #define LIVELLI 4
+    #define NODI_PER_LIVELLO 4
+    matrix = create_adj_matrix_float_square(LIVELLI, NODI_PER_LIVELLO);
 
     // For efficiency's sake, I'll check the user's preferences once and then I'll do two loops.
     // One for the automatic training and one for the manual training. 
