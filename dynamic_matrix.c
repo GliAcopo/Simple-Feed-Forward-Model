@@ -8,8 +8,8 @@
 
 // Enumeration for matrix error codes
 typedef enum {
-    RETURN_TRUE = 1,                // No error; The called function returns true
-    RETURN_FALSE = 0,                // No error; the called function returns false
+    RETURN_FALSE = 1,                // No error; the called function returns false
+    RETURN_TRUE = 0,                // No error; The called function returns true
     MATRIX_ERROR_NULL_POINTER = -1,    // Matrix pointer is NULL
     MATRIX_ERROR_INVALID_DIMENSIONS = -2, // Invalid dimensions (e.g., rows or columns <= 0)
     MATRIX_ERROR_ROW_NULL = -3,        // Specific row pointer is NULL
@@ -99,8 +99,13 @@ MatrixError check_if_all_elements_of_matrix_are_equal_to_value(float** matrix_po
     return RETURN_TRUE;
 }
 
+/**
+ * @brief frees the matrix allocated memory
+ * 
+ * @param matrix_pointer 
+ * @param rows 
+ */
 void free_float_matrix(float** matrix_pointer, int rows){
-    /* frees the matrix allocated memory*/
 
     for (int i = 0; i < rows; i++){
         free(matrix_pointer[i]);
@@ -109,8 +114,7 @@ void free_float_matrix(float** matrix_pointer, int rows){
 
 }
 
-    /* This function verifies if the matrix contains any null pointers
-    :return: 0 if no null pointers are recognised, -1 if any exeptions are met. If the exeption is in the rows, then the row number is given by the equation (-1)*(row_number + 2), so that a negative value is given when an error is encountered, whilist mantaining -1 as the "error number" for matrix pointer == NULL*/
+
 /**
  * @brief This function verifies if the matrix contains any null pointers
  * 
@@ -133,6 +137,13 @@ MatrixError verify_matrix(float** matrix_pointer, int rows, int columns){
     return RETURN_TRUE;
 }
 
+/**
+ * @brief Prints all matrix values in an actual "matrix form", as they are actually placed in the matrix
+ * 
+ * @param matrix_pointer 
+ * @param rows 
+ * @param columns 
+ */
 void print_matrix_float(float** matrix_pointer, int rows, int columns){
     printf("\n");
     if (matrix_pointer != NULL){
@@ -188,8 +199,16 @@ int change_value_matrix_secure(float** matrix_pointer, int row, int column, floa
 
 }
 
-int change_value_matrix_matrix(float** matrix_pointer, int row, int column, float value_to_change){
-
+/**
+ * @brief Changes the value in the matrix specified by the given coordinates to another float value specified by input 
+ * 
+ * @param matrix_pointer 
+ * @param row 
+ * @param column 
+ * @param value_to_change 
+ * @return int 
+ */
+MatrixError change_value_matrix(float** matrix_pointer, int row, int column, float value_to_change){
 
     if (VERBOSE != 0){
         printf("Previous matrix element was %f --> ", matrix_pointer[row][column]);
@@ -201,13 +220,17 @@ int change_value_matrix_matrix(float** matrix_pointer, int row, int column, floa
             
     // This logic cheks if the value was actually changed correctly
     if (matrix_pointer[row][column] == value_to_change){
-        return(0);
+        return RETURN_TRUE; // Since the value got actually changed, we return a success with Error = false
     } else {
-        return(-1);
+        return MATRIX_ERROR_NULL_POINTER; // returns -1 as a general error if the value wasn't actually changed
     }
 
 }
 
+/**
+ * @brief it's just a function I run in order to test if everything works correctly
+ * 
+ */
 void test(){
     int i = 2;
     int j = i;
