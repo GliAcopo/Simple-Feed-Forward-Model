@@ -72,7 +72,7 @@ void print_matrix_float(float** matrix_pointer, int rows, int columns){
     printf("\n");
 }
 
-int change_value_secure(float** matrix_pointer, int row, int column, float value_to_change){
+int change_value_matrix_matrix_secure(float** matrix_pointer, int row, int column, float value_to_change){
     /* DEPRECATED --> it is much better to verify the maatrix first with verify_matrix function, as this function runs every test every time it is called on the same matrix. If you want to change the calue on a matrix you are going to access many times then it is better to run first verify_matrix to check the matrix once and then run change_matrix_value
     This function aims to change a value in the matrix in the indicated column and row, with the given value.
     this function will handle the errors related to types and unexpected behaviour in pointers 
@@ -125,7 +125,7 @@ int verify_matrix(float** matrix_pointer, int rows, int columns){
 
 }
 
-int change_value_matrix(float** matrix_pointer, int row, int column, float value_to_change){
+int change_value_matrix_matrix(float** matrix_pointer, int row, int column, float value_to_change){
 
 
     if (VERBOSE != 0){
@@ -145,8 +145,7 @@ int change_value_matrix(float** matrix_pointer, int row, int column, float value
 
 }
 
-
-int main(int argc, char **argv){
+void test(){
     int i = 2;
     int j = i;
 
@@ -155,15 +154,17 @@ int main(int argc, char **argv){
     init_matrix_to_float_value(matrix, i, j, 0.1);
     print_matrix_float(matrix, i, j);
 
-    change_value(matrix, 0, 0, 27);
+    change_value_matrix(matrix, 0, 0, 27);
     print_matrix_float(matrix, i, j);
 
     free_float_matrix(matrix, i);
-    change_value(matrix, 0, 0, 27);
+    change_value_matrix(matrix, 0, 0, 27);
     matrix = NULL;
     
-    change_value(matrix, 0, 0, 27);
+    change_value_matrix(matrix, 0, 0, 27);
     print_matrix_float(matrix, i, j);
+}
 
+int main(int argc, char **argv){
     return(0);
 }

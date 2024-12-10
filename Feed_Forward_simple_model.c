@@ -33,9 +33,11 @@ PENSO DI AVER TROVATO L'ESERCIZIO GIUSTO! Farò un modello di intelligenza artif
 
 */
 
+/*
 typedef struct {
     int value; // as for now, this representation could be non-optimal, I'm just leaving it here for now.
 } neuron; 
+*/
 
 #define LIVELLI 4
 #define NODI_PER_LIVELLO 4
