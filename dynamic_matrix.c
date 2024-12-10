@@ -31,16 +31,31 @@ float** create_matrix_float(int rows, int columns){
     return(matrix);
 }
 
-int init_matrix_to_float_value(float** matrix_pointer, int rows, int columns, float value){
+float** init_matrix_to_float_value(float** matrix_pointer, int rows, int columns, float value){
     /* initialize the given matrix to a given float value
-    :return: 0 if everything is correct, -1 if something went wrong*/
+    :return: the pointer to the matrix */
 
     for (int i = 0; i < rows; i++){
         for (int j = 0; j < columns; j++){
             matrix_pointer[i][j] = value;
         }
     }
-    return(0);
+    return(matrix_pointer);
+}
+
+int check_if_all_elements_of_matrix_are_equal_to_value(float** matrix_pointer, int rows, int columns, float value){
+    /* checks if all elements of the matrix are equal to the given value, 
+    BE CAREFUL, NO CHECKS ARE BEING DONE ON VALIDITY OF MATRIX
+    :return: 1 if true, 0 if false*/
+
+    for (int i = 0; i < rows; i++){
+        for (int j = 0; j < columns; j++){
+            if (matrix_pointer[i][j] != value){
+                return(0);
+            }
+        }
+    }
+    return(1);
 }
 
 void free_float_matrix(float** matrix_pointer, int rows){
@@ -49,6 +64,24 @@ void free_float_matrix(float** matrix_pointer, int rows){
     for (int i = 0; i < rows; i++){
         free(matrix_pointer[i]);
         matrix_pointer[i] = NULL;
+    }
+
+}
+
+int verify_matrix(float** matrix_pointer, int rows, int columns){
+    /* This function verifies if the matrix contains any null pointers
+    :return: 0 if no null pointers are recognised, -1 if any exeptions are met. If the exeption is in the rows, then the row number is given by the equation (-1)*(row_number + 2), so that a negative value is given when an error is encountered, whilist mantaining -1 as the "error number" for matrix pointer == NULL*/
+
+    if (matrix_pointer == NULL){
+        return(-1);
+    } else {
+        for (int i = 0; i < rows; i++){
+            if (matrix_pointer[i] == NULL){
+                return((-1)*(i + 2));
+            } else {
+                return(0);
+            }
+        }
     }
 
 }
@@ -101,24 +134,6 @@ int change_value_matrix_matrix_secure(float** matrix_pointer, int row, int colum
                 return(0);
             } else {
                 return(-1);
-            }
-        }
-    }
-
-}
-
-int verify_matrix(float** matrix_pointer, int rows, int columns){
-    /* This function verifies if the matrix contains any null pointers
-    :return: 0 if no null pointers are recognised, -1 if any exeptions are met. If the exeption is in the rows, then the row number is given by the equation (-1)*(row_number + 2), so that a negative value is given when an error is encountered, whilist mantaining -1 as the "error number" for matrix pointer == NULL*/
-
-    if (matrix_pointer == NULL){
-        return(-1);
-    } else {
-        for (int i = 0; i < rows; i++){
-            if (matrix_pointer[i] == NULL){
-                return((-1)*(i + 2));
-            } else {
-                return(0);
             }
         }
     }
