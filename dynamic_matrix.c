@@ -120,8 +120,8 @@ int main(int argc, char **argv){
 
     free_float_matrix(matrix, i);
     change_value(matrix, 0, 0, 27);
-
     matrix = NULL;
+    
     change_value(matrix, 0, 0, 27);
     print_matrix_float(matrix, i, j);
 
