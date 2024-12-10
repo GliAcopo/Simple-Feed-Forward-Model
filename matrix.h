@@ -5,9 +5,10 @@
 typedef enum {
     RETURN_FALSE = 1,                // No error; the called function returns false
     RETURN_TRUE = 0,                // No error; The called function returns true
-    MATRIX_ERROR_NULL_POINTER = -1,    // Matrix pointer is NULL
-    MATRIX_ERROR_INVALID_DIMENSIONS = -2, // Invalid dimensions (e.g., rows or columns <= 0)
-    MATRIX_ERROR_ROW_NULL = -3,        // Specific row pointer is NULL
+    MATRIX_ERROR = -1,
+    MATRIX_ERROR_NULL_POINTER = -2,    // Matrix pointer is NULL
+    MATRIX_ERROR_INVALID_DIMENSIONS = -3, // Invalid dimensions (e.g., rows or columns <= 0)
+    MATRIX_ERROR_ROW_NULL = -4,        // Specific row pointer is NULL
 } MatrixError;
 
 float** create_matrix_float(int rows, int columns);

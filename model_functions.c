@@ -1,7 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "matrix.h"
 #include "model_functions.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 float** create_adj_matrix_float_square(int layers, int nodes_per_layer){
     /*
@@ -11,13 +11,16 @@ float** create_adj_matrix_float_square(int layers, int nodes_per_layer){
     */
     float** matrix_pointer = create_matrix_float(layers, nodes_per_layer);
     matrix_pointer = init_matrix_to_float_value(matrix_pointer, layers, nodes_per_layer, 0);
-    if (verify_matrix(matrix_pointer, layers, nodes_per_layer) == -1){ 
-        printf("\n verify_matrix returned -1 \n");
-            return(NULL);
-    } else if (check_if_all_elements_of_matrix_are_equal_to_value(matrix_pointer, layers, nodes_per_layer, 0) == 0){
-        printf("\n check_if_all_elements_of_matrix_are_equal_to_value returned 0 \n");
+
+    int check = verify_matrix(matrix_pointer, layers, nodes_per_layer);
+    if (check < 0){ 
+        printf("\n verify_matrix returned an error %d\n", check);
+        return(NULL);
+    } else if (check_if_all_elements_of_matrix_are_equal_to_value(matrix_pointer, layers, nodes_per_layer, 0) != RETURN_TRUE){
+        printf("\n check_if_all_elements_of_matrix_are_equal_to_value returned %d \n", check_if_all_elements_of_matrix_are_equal_to_value(matrix_pointer, layers, nodes_per_layer, 0));
         return(NULL);
     }
+    printf("Nothing went wrong, returning matrix pointer\n");
     return(matrix_pointer);
 }
 
