@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "matrix.h"
+#include "model_functions.h"
 
 float** create_adj_matrix_float_square(int layers, int nodes_per_layer){
     /*

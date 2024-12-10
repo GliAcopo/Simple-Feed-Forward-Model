@@ -2,7 +2,8 @@
    But apart from that, I can use whathever method I want.
    */
 
-
+#include "model_functions.h"
+#include "matrix.h"
 
 #define VERBOSE = 1;
 
@@ -45,7 +46,7 @@ void train(int feedback){
 int main(int argc, char **argv){
     #define LIVELLI 4
     #define NODI_PER_LIVELLO 4
-    matrix = create_adj_matrix_float_square(LIVELLI, NODI_PER_LIVELLO);
+    float** matrix = create_adj_matrix_float_square(LIVELLI, NODI_PER_LIVELLO);
 
     // For efficiency's sake, I'll check the user's preferences once and then I'll do two loops.
     // One for the automatic training and one for the manual training. 

@@ -10,6 +10,4 @@ int change_value_matrix_secure(float** matrix_pointer, int row, int column, floa
 int change_value_matrix(float** matrix_pointer, int row, int column, float value_to_change);
 int verify_matrix(float** matrix_pointer, int rows, int columns);
 
-float** create_adj_matrix_float_square(int layers, int nodes_per_layer);
-
 #endif // MATRIX_H
