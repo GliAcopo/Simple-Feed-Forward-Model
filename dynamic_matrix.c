@@ -48,6 +48,7 @@ void free_float_matrix(float** matrix_pointer, int rows){
 
     for (int i = 0; i < rows; i++){
         free(matrix_pointer[i]);
+        matrix_pointer[i] = NULL;
     }
 
 }
@@ -113,8 +114,15 @@ int main(int argc, char **argv){
     print_matrix_float(matrix, i, j);
     init_matrix_to_float_value(matrix, i, j, 0.1);
     print_matrix_float(matrix, i, j);
+
+    change_value(matrix, 0, 0, 27);
+    print_matrix_float(matrix, i, j);
+
     free_float_matrix(matrix, i);
+    change_value(matrix, 0, 0, 27);
+
     matrix = NULL;
+    change_value(matrix, 0, 0, 27);
     print_matrix_float(matrix, i, j);
 
     return(0);
