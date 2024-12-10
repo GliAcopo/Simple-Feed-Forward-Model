@@ -45,6 +45,7 @@ void train(int feedback){
 }
 
 int main(int argc, char **argv){
+    /*
     #define LIVELLI 4
     #define NODI_PER_LIVELLO 4
     float** matrix = create_adj_matrix_float_square(LIVELLI, NODI_PER_LIVELLO);
@@ -57,4 +58,6 @@ int main(int argc, char **argv){
     else{
         auto_loop();
     }
+    */
+   return(0);
 }
