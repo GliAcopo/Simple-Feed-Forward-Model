@@ -2,9 +2,7 @@
    But apart from that, I can use whathever method I want.
    */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "matrix.h"
+
 
 #define VERBOSE = 1;
 
