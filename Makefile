@@ -1,33 +1,47 @@
+# Makefile
+
 # Compiler and Flags
 CC = gcc
 CFLAGS = -Wall -Wextra -g
 
-# Targets
-all: dynamic_matrix.a.out model_functions.a.out Feed_Forward_simple_model.a.out
+# Target Executable
+TARGET = Feed_Forward_simple_model.a.out
 
-# Compile dynamic_matrix.c into an executable
-dynamic_matrix.a.out: dynamic_matrix.c matrix.h
-	$(CC) $(CFLAGS) -o dynamic_matrix.a.out dynamic_matrix.c
+# Source Files
+SRC_DYNAMIC = dynamic_matrix.c
+SRC_MODEL = model_functions.c
+SRC_FEED = Feed_Forward_simple_model.c
 
-# Compile model_functions.c and link with dynamic_matrix.c
-model_functions.a.out: model_functions.c matrix.h
-	$(CC) $(CFLAGS) -o model_functions.a.out model_functions.c dynamic_matrix.c
+# Header Files
+HEADERS = matrix.h model_functions.h
 
-# Compile Feed_Forward_simple_model.c and link with model_functions.c and dynamic_matrix.c
-Feed_Forward_simple_model.a.out: Feed_Forward_simple_model.c matrix.h model_functions.h
-	$(CC) $(CFLAGS) -o Feed_Forward_simple_model.a.out Feed_Forward_simple_model.c model_functions.c dynamic_matrix.c
+# Object Files
+OBJ_DYNAMIC = dynamic_matrix.o
+OBJ_MODEL = model_functions.o
+OBJ_FEED = Feed_Forward_simple_model.o
 
-# Clean build artifacts
+# Default Target
+all: $(TARGET)
+
+# Link Object Files to Create Executable
+$(TARGET): $(OBJ_DYNAMIC) $(OBJ_MODEL) $(OBJ_FEED)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJ_DYNAMIC) $(OBJ_MODEL) $(OBJ_FEED)
+
+# Compile dynamic_matrix.c to dynamic_matrix.o
+dynamic_matrix.o: $(SRC_DYNAMIC) $(HEADERS)
+	$(CC) $(CFLAGS) -c $(SRC_DYNAMIC)
+
+# Compile model_functions.c to model_functions.o
+model_functions.o: $(SRC_MODEL) $(HEADERS)
+	$(CC) $(CFLAGS) -c $(SRC_MODEL)
+
+# Compile Feed_Forward_simple_model.c to Feed_Forward_simple_model.o
+Feed_Forward_simple_model.o: $(SRC_FEED) $(HEADERS)
+	$(CC) $(CFLAGS) -c $(SRC_FEED)
+
+# Clean Build Artifacts
 clean:
-	rm -f *.a.out
+	rm -f $(OBJ_DYNAMIC) $(OBJ_MODEL) $(OBJ_FEED) $(TARGET)
 
-# Individual Targets (Optional --> probably even broken too)
-matrix:
-	$(CC) $(CFLAGS) -o dynamic_matrix.a.out dynamic_matrix.c
-
-model_functions:
-	$(CC) $(CFLAGS) -o model_functions.a.out model_functions.c dynamic_matrix.c
-
-Feed_Forward_simple_model:
-	$(CC) $(CFLAGS) -o Feed_Forward_simple_model.a.out Feed_Forward_simple_model.c model_functions.c dynamic_matrix.c
-
+# Phony Targets
+.PHONY: all clean
