@@ -126,7 +126,7 @@ void free_float_matrix(float** matrix_pointer, int rows){
  * @param columns 
  * @return MatrixError = {1, -1, -3...}. RETURN_TRUE = (1) if no null pointers are recognised; The number is negative if any exeptions are met -> If the exeption is in the rows, then the row number is given by the equation (-1)*(row_number + 3), so that a negative value is given when an error is encountered; MATRIX_ERROR_NULL_POINTER = -1 if the matrix is a NULL pointer
  */
-MatrixError verify_matrix(float** matrix_pointer, int rows, int columns){
+MatrixError verify_matrix(float** matrix_pointer, int rows){
     
     if (matrix_pointer == NULL){
         return MATRIX_ERROR_NULL_POINTER;
@@ -254,6 +254,8 @@ void test(){
     print_matrix_float(matrix, i, j);
 }
 
+/* This main is invalid since it is already referenced in feed_forward_simple_model.c (only one declaration possible)
 int main(int argc, char **argv){
     return(0);
 }
+*/

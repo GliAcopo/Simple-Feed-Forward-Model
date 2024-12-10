@@ -12,7 +12,7 @@ float** create_adj_matrix_float_square(int layers, int nodes_per_layer){
     float** matrix_pointer = create_matrix_float(layers, nodes_per_layer);
     matrix_pointer = init_matrix_to_float_value(matrix_pointer, layers, nodes_per_layer, 0);
 
-    int check = verify_matrix(matrix_pointer, layers, nodes_per_layer);
+    int check = verify_matrix(matrix_pointer, layers);
     if (check < 0){ 
         printf("\n verify_matrix returned an error %d\n", check);
         return(NULL);
@@ -24,6 +24,8 @@ float** create_adj_matrix_float_square(int layers, int nodes_per_layer){
     return(matrix_pointer);
 }
 
+/* This main is invalid since it is already referenced in feed_forward_simple_model.c (only one declaration possible)
 int main(int argc, char** argv){
     return(0);
 }
+*/

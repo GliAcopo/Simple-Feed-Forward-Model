@@ -21,7 +21,7 @@ Feed_Forward_simple_model.a.out: Feed_Forward_simple_model.c matrix.h model_func
 clean:
 	rm -f *.a.out
 
-# Individual Targets (Optional)
+# Individual Targets (Optional --> probably even broken too)
 matrix:
 	$(CC) $(CFLAGS) -o dynamic_matrix.a.out dynamic_matrix.c
 
