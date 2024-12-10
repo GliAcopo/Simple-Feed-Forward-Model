@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include "matrix.h"
 
+#define VERBOSE = 1;
+
 //  TODO I should probably make a file with the data structure definitions.
 //  TODO Should I add a different file containing the functions to every layer?
 #define autoMode 0  // This variable is in boolean logic, and is used for the choice between auto training and standard training.  

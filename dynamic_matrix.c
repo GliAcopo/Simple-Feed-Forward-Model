@@ -72,8 +72,9 @@ void print_matrix_float(float** matrix_pointer, int rows, int columns){
     printf("\n");
 }
 
-int change_value(float** matrix_pointer, int row, int column, float value_to_change){
-    /* This function aims to change a value in the matrix in the indicated column and row, with the given value.
+int change_value_secure(float** matrix_pointer, int row, int column, float value_to_change){
+    /* DEPRECATED --> it is much better to verify the maatrix first with verify_matrix function, as this function runs every test every time it is called on the same matrix. If you want to change the calue on a matrix you are going to access many times then it is better to run first verify_matrix to check the matrix once and then run change_matrix_value
+    This function aims to change a value in the matrix in the indicated column and row, with the given value.
     this function will handle the errors related to types and unexpected behaviour in pointers 
     VERBOSE constant abilitates debug messages
     :return: -1 if unexpected behaviour is recognised, else it returns 0
@@ -105,6 +106,45 @@ int change_value(float** matrix_pointer, int row, int column, float value_to_cha
     }
 
 }
+
+int verify_matrix(float** matrix_pointer, int rows, int columns){
+    /* This function verifies if the matrix contains any null pointers
+    :return: 0 if no null pointers are recognised, -1 if any exeptions are met. If the exeption is in the rows, then the row number is given by the equation (-1)*(row_number + 2), so that a negative value is given when an error is encountered, whilist mantaining -1 as the "error number" for matrix pointer == NULL*/
+
+    if (matrix_pointer == NULL){
+        return(-1);
+    } else {
+        for (int i = 0; i < rows; i++){
+            if (matrix_pointer[i] == NULL){
+                return((-1)*(i + 2));
+            } else {
+                return(0);
+            }
+        }
+    }
+
+}
+
+int change_value_matrix(float** matrix_pointer, int row, int column, float value_to_change){
+
+
+    if (VERBOSE != 0){
+        printf("Previous matrix element was %f --> ", matrix_pointer[row][column]);
+        matrix_pointer[row][column] = value_to_change;
+        printf("It was changed to %f\n", matrix_pointer[row][column]);
+    } else {
+        matrix_pointer[row][column] = value_to_change;
+    }
+            
+    // This logic cheks if the value was actually changed correctly
+    if (matrix_pointer[row][column] == value_to_change){
+        return(0);
+    } else {
+        return(-1);
+    }
+
+}
+
 
 int main(int argc, char **argv){
     int i = 2;
