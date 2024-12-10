@@ -4,6 +4,7 @@
 
 #include "model_functions.h"
 #include "matrix.h"
+#include "settings.h"
 
 #define VERBOSE = 1;
 

@@ -1,12 +1,14 @@
 /* devo creare delle funzioni capaci di creare e gestire una tabella di archi di un grafo di dimensioni pari al numero di nodi*/
+#include "matrix.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "matrix.h"
 
 #define VERBOSE 1
 
 
 // Enumeration for matrix error codes
+// WARNING!!! The inmplemented (and maybe even updated) definition of this MatrixError enum is in the "matrix.h" header file
+/*
 typedef enum {
     RETURN_FALSE = 1,                // No error; the called function returns false
     RETURN_TRUE = 0,                // No error; The called function returns true
@@ -14,6 +16,7 @@ typedef enum {
     MATRIX_ERROR_INVALID_DIMENSIONS = -2, // Invalid dimensions (e.g., rows or columns <= 0)
     MATRIX_ERROR_ROW_NULL = -3,        // Specific row pointer is NULL
 } MatrixError;
+*/
 
 /**
  * @brief Creates a matrix of floats with specified rows and columns.
