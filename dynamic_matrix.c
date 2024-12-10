@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include "matrix.h"
 
+#define VERBOSE 1
+
 /* devo creare delle funzioni capaci di creare e gestire una tabella di archi di un grafo di dimensioni pari al numero di nodi*/
 
 float** create_matrix_float(int rows, int columns){
@@ -67,6 +69,40 @@ void print_matrix_float(float** matrix_pointer, int rows, int columns){
         printf("\n--- invalid matrix pointer ---\n");
     }
     printf("\n");
+}
+
+int change_value(float** matrix_pointer, int row, int column, float value_to_change){
+    /* This function aims to change a value in the matrix in the indicated column and row, with the given value.
+    this function will handle the errors related to types and unexpected behaviour in pointers 
+    VERBOSE constant abilitates debug messages
+    :return: -1 if unexpected behaviour is recognised, else it returns 0
+    */
+
+    if (matrix_pointer == NULL){
+        printf("\n ERROR: matrix pointer is NULL \n");
+        return(-1);
+    } else {
+        if (matrix_pointer[row] == NULL){
+            printf("\n ERROR: matrix pointer to row %d is null \n", row);
+            return(-1);
+        } else {
+            if (VERBOSE != 0){
+                printf("Previous matrix element was %f --> ", matrix_pointer[row][column]);
+                matrix_pointer[row][column] = value_to_change;
+                printf("It was changed to %f\n", matrix_pointer[row][column]);
+            } else {
+                matrix_pointer[row][column] = value_to_change;
+            }
+            
+            // This logic cheks if the value was actually changed correctly
+            if (matrix_pointer[row][column] == value_to_change){
+                return(0);
+            } else {
+                return(-1);
+            }
+        }
+    }
+
 }
 
 int main(int argc, char **argv){
