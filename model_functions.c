@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+[[deprecated("This function will simply create a layers x nodes_per_layer matrix, and init it to 0, this function is not really useful nor optimised for the FF model, use other functions intead")]]
 float** create_adj_matrix_float_square(int layers, int nodes_per_layer){
     /*
     This function creates an ajacence matrix of a model composed of tot layers and tot nodes per layer, this model is extremely simple since it is exentially a square
@@ -28,6 +29,35 @@ float** create_adj_matrix_float_square(int layers, int nodes_per_layer){
     return(matrix_pointer);
 }
 
+/**
+ * @brief This function will create a vector of matrices, each of the matrices will contain the weights of the edges connected to the nodes.
+ * Since this is a fully connected FeedForward neural network we will represent the edges as follows: 0 = no connection, positive = edge from left to right (going forward); negative = edge from right to left (backwards)
+ * @return matrices_vector (float***). This is a vector, each element of this vector contains the matrices of the weights for each layer of dimension (nodes_per_layer x nodes_per_layer), (yes, this neural network is a square)
+ */
+float*** create_FF_model_matrices(int layers, int nodes_per_layer){
+    float*** matrices_vector[layers];   // Creating the vector to store the matrices
+
+    for (int i = 0; i < nodes_per_layer; i++){
+        float** matrix = create_matrix_float(nodes_per_layer, nodes_per_layer); // creating the matrix of nodes x nodes
+        matrix = init_matrix_to_float_value(matrix, nodes_per_layer, nodes_per_layer, (float)1);    // initiating the matrix to value 1 to symbolise the connections
+
+        // security checks to identify problem in matrix creation{
+            int check = verify_matrix(matrix, nodes_per_layer); // verifiyng that the matrix is valid
+            if (check < 0){ 
+                printf("\n verify_matrix returned an error: %d\n", check);
+                return(NULL);
+            }
+            check = check_if_all_elements_of_matrix_are_equal_to_value(matrix, nodes_per_layer, nodes_per_layer, (float)1);
+            if (check != RETURN_TRUE){
+                printf("\n check_if_all_elements_of_matrix_are_equal_to_value returned an error: %d \n", check);
+                return(NULL);
+            }
+        //}
+
+        matrices_vector[i] = matrix;
+    }
+    return(matrices_vector);
+}
 
 
 /* This main is invalid since it is already referenced in feed_forward_simple_model.c (only one declaration possible)
