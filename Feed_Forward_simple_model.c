@@ -6,11 +6,9 @@
 #include "matrix.h"
 #include "settings.h"
 
-#define VERBOSE = 1;
-
 //  TODO I should probably make a file with the data structure definitions.
 //  TODO Should I add a different file containing the functions to every layer?
-#define autoMode 0  // This variable is in boolean logic, and is used for the choice between auto training and standard training.  
+  
 
 /* Let's do a brief recap, for what I understand a model is exentially a graph (un gafo), with nodes, and nodes are connected to each other by arcs, 
     :param arcs - these arcs connect two nodes toghether all have a weight (a value that influence the activation threshold of the node).

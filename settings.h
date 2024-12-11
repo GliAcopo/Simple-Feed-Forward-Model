@@ -1,6 +1,8 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
+#define autoMode 0  // This variable is in boolean logic, and is used for the choice between auto training and standard training.
+
 /**
  * @brief just a simple enum to use bool logic if needed
  * 

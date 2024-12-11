@@ -1,5 +1,6 @@
 #include "matrix.h"
 #include "model_functions.h"
+#include "settings.h"
 #include <stdio.h>
 #include <stdlib.h>
 

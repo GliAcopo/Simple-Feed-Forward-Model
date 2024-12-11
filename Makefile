@@ -13,7 +13,7 @@ SRC_MODEL = model_functions.c
 SRC_FEED = Feed_Forward_simple_model.c
 
 # Header Files
-HEADERS = matrix.h model_functions.h
+HEADERS = matrix.h model_functions.h settings.h
 
 # Object Files
 OBJ_DYNAMIC = dynamic_matrix.o
