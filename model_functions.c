@@ -15,15 +15,20 @@ float** create_adj_matrix_float_square(int layers, int nodes_per_layer){
 
     int check = verify_matrix(matrix_pointer, layers);
     if (check < 0){ 
-        printf("\n verify_matrix returned an error %d\n", check);
+        printf("\n verify_matrix returned an error: %d\n", check);
         return(NULL);
     } else if (check_if_all_elements_of_matrix_are_equal_to_value(matrix_pointer, layers, nodes_per_layer, 0) != RETURN_TRUE){
-        printf("\n check_if_all_elements_of_matrix_are_equal_to_value returned %d \n", check_if_all_elements_of_matrix_are_equal_to_value(matrix_pointer, layers, nodes_per_layer, 0));
+        printf("\n check_if_all_elements_of_matrix_are_equal_to_value returned an error: %d \n", check_if_all_elements_of_matrix_are_equal_to_value(matrix_pointer, layers, nodes_per_layer, 0));
         return(NULL);
     }
-    printf("Nothing went wrong, returning matrix pointer\n");
+    #if VERBOSE
+        printf("Nothing went wrong, returning matrix pointer...\n");
+    #endif
+    
     return(matrix_pointer);
 }
+
+
 
 /* This main is invalid since it is already referenced in feed_forward_simple_model.c (only one declaration possible)
 int main(int argc, char** argv){

@@ -1,16 +1,11 @@
 /* I want to create a super simple ai model using C language, The model must be a standard FF model composed of an input layer, a secret layer and an output layer.
    But apart from that, I can use whathever method I want.
-   */
+*/
 
-#include "model_functions.h"
-#include "matrix.h"
-#include "settings.h"
-
-//  TODO I should probably make a file with the data structure definitions.
-//  TODO Should I add a different file containing the functions to every layer?
   
 
-/* Let's do a brief recap, for what I understand a model is exentially a graph (un gafo), with nodes, and nodes are connected to each other by arcs, 
+/* 
+    Let's do a brief recap, for what I understand a model is exentially a graph (un gafo), with nodes, and nodes are connected to each other by arcs, 
     :param arcs - these arcs connect two nodes toghether all have a weight (a value that influence the activation threshold of the node).
     :param weight - the weight of an arc influences the value that is passing trough the arc. The value must be multiplied by the arc weight.
     :param node - each node is made up by an activation threshold, an activation function, and an output value.
@@ -28,7 +23,6 @@ PENSO DI AVER TROVATO L'ESERCIZIO GIUSTO! Farò un modello di intelligenza artif
         (1) = Il valore prodotto è superiore al valore atteso.
      In base a questi dati forniti il modello dovrà modificare i pesi dei suoi archi di conseguenza.
     :idea! Sarà anche il caso di introdurre una funzione di autoapprendimento che fornisca in input i dati di apprendimento autonomamente.
-
 */
 
 /*
@@ -37,6 +31,11 @@ typedef struct {
 } neuron; 
 */
 
+#include "model_functions.h"
+#include "matrix.h"
+#include "settings.h"
+//  TODO --> DONE I should probably make a file with the data structure definitions. 
+//  TODO --> DONE Should I add a different file containing the functions to every layer?
 
 void train(int feedback){
     //  TODO Training function goes here.
