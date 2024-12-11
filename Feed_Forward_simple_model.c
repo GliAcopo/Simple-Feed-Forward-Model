@@ -41,7 +41,18 @@ void train(int feedback){
     //  TODO Training function goes here.
 }
 
+void test1(){
+    int layers = 4;
+    int nodes_per_layer = 4;
+    float*** matrices_vector = create_FF_model_matrices(layers, nodes_per_layer);
+    print_matrix_vector_float(matrices_vector, layers, nodes_per_layer);
+
+}
+
 int main(int argc, char **argv){
+
+    test1();
+
     /*
     #define LIVELLI 4
     #define NODI_PER_LIVELLO 4

@@ -53,10 +53,15 @@ float*** create_FF_model_matrices(int layers, int nodes_per_layer){
                 return(NULL);
             }
         //}
-
         matrices_vector[i] = matrix;
     }
     return(matrices_vector);
+}
+
+void print_matrix_vector_float(float*** matrices_vector, int layers, int nodes_per_layer){
+    for (int layer = 0; layer < layers; layer++){
+        print_matrix_float(matrices_vector[layer], nodes_per_layer, nodes_per_layer);
+    }
 }
 
 
