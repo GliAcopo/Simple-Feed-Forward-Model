@@ -55,7 +55,7 @@ float*** create_FF_model_matrices(int layers, int nodes_per_layer){
         //}
 
         matrices_vector[i] = matrix;
-        free_float_matrix(matrix, nodes_per_layer);
+        // free_float_matrix(matrix, nodes_per_layer); THIS DOESN'T WORK memory gets freed too fast
     }
     return(matrices_vector);
 }
