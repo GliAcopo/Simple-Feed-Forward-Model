@@ -67,8 +67,3 @@ void print_matrix_vector_float(float*** matrices_vector, int layers, int nodes_p
 }
 
 
-/* This main is invalid since it is already referenced in feed_forward_simple_model.c (only one declaration possible)
-int main(int argc, char** argv){
-    return(0);
-}
-*/

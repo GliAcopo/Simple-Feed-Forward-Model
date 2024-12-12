@@ -272,8 +272,3 @@ void test(){
     print_matrix_float(matrix, i, j);
 }
 
-/* This main is invalid since it is already referenced in feed_forward_simple_model.c (only one declaration possible)
-int main(int argc, char **argv){
-    return(0);
-}
-*/
