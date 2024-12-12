@@ -39,6 +39,7 @@ typedef struct {
 #include "settings.h"
 #include "matrix.h"
 #include "model_functions.h"
+#include "node_functions.h"
 
 void train(int feedback){
     //  TODO Training function goes here.
