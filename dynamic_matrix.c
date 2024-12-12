@@ -168,7 +168,7 @@ void print_matrix_float(float** matrix_pointer, int rows, int columns){
     printf("\n");
 }
 
-__attribute__((deprecated("Use verify_matrix followed by change_matrix_value instead")))
+[[deprecated("Use verify_matrix followed by change_matrix_value instead")]]
 int change_value_matrix_secure(float** matrix_pointer, int row, int column, float value_to_change){
     /* DEPRECATED --> it is much better to verify the maatrix first with verify_matrix function, as this function runs every test every time it is called on the same matrix. If you want to change the calue on a matrix you are going to access many times then it is better to run first verify_matrix to check the matrix once and then run change_matrix_value
     This function aims to change a value in the matrix in the indicated column and row, with the given value.
