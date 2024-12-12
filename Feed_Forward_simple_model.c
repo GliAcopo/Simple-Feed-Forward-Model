@@ -56,7 +56,7 @@ void test1(){
     
     float*** matrices_vector = create_FF_model_matrices(layers, nodes_per_layer);
     #if VERBOSE == 1
-    printf("given value to matrices_vector %p\n", matrices_vector);
+        printf("given value to matrices_vector %p\n", matrices_vector);
     #endif
     print_matrix_vector_float(matrices_vector, layers, nodes_per_layer);
 

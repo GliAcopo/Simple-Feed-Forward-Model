@@ -8,7 +8,7 @@ CFLAGS = -Wall -Wextra -g
 TARGET = Feed_Forward_simple_model.a.out
 
 # Source Files
-SRC_DYNAMIC = dynamic_matrix.c
+SRC_DYNAMIC = matrix_functions.c
 SRC_MODEL = model_functions.c
 SRC_FEED = Feed_Forward_simple_model.c
 
