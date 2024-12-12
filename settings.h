@@ -8,7 +8,7 @@
  * @brief just a simple enum to use bool logic if needed
  * 
  */
-typedef enum {
+typedef enum Bool{
     TRUE = 0,
     FALSE = 1,
 } Bool;
