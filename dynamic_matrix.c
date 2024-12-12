@@ -61,10 +61,12 @@ float** create_matrix_float(int rows, int columns){
  * @return float** if the matrix is initialized correctly, else return a NULL
  */
 float** init_matrix_to_float_value(float** matrix_pointer, int rows, int columns, float value){
+    /*
     if (matrix_pointer == NULL){
         printf("Error: Cannot initialize a NULL matrix.\n");
         return NULL;
     }
+    */
 
     for (int i = 0; i < rows; i++){
         for (int j = 0; j < columns; j++){
@@ -213,13 +215,14 @@ int change_value_matrix_secure(float** matrix_pointer, int row, int column, floa
  */
 MatrixError change_value_matrix(float** matrix_pointer, int row, int column, float value_to_change){
 
-    if (VERBOSE != 0){
+    #if VERBOSE
         printf("Previous matrix element was %f --> ", matrix_pointer[row][column]);
+    #endif 
         matrix_pointer[row][column] = value_to_change;
+    #if VERBOSE
         printf("It was changed to %f\n", matrix_pointer[row][column]);
-    } else {
-        matrix_pointer[row][column] = value_to_change;
-    }
+    #endif
+    
             
     // This logic cheks if the value was actually changed correctly
     if (matrix_pointer[row][column] == value_to_change){
@@ -228,6 +231,21 @@ MatrixError change_value_matrix(float** matrix_pointer, int row, int column, flo
         return MATRIX_ERROR_NULL_POINTER; // returns -1 as a general error if the value wasn't actually changed
     }
 
+}
+
+/**
+ * @brief Get the value in the matrix at the specified coordinates
+ * 
+ * @param matrix_pointer 
+ * @param row 
+ * @param column 
+ * @return float, the value
+ */
+float get_value_matrix(float** matrix_pointer, int row, int column){
+    #if VERBOSE
+        printf("%f\n", matrix_pointer[row][column]);
+    #endif
+    return(matrix_pointer[row][column]);
 }
 
 /**

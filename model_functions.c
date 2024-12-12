@@ -39,6 +39,7 @@ float*** create_FF_model_matrices(int layers, int nodes_per_layer){
 
     for (int i = 0; i < nodes_per_layer; i++){
         float** matrix = create_matrix_float(nodes_per_layer, nodes_per_layer); // creating the matrix of nodes x nodes
+        
         matrix = init_matrix_to_float_value(matrix, nodes_per_layer, nodes_per_layer, (float)1);    // initiating the matrix to value 1 to symbolise the connections
 
         // security checks to identify problem in matrix creation{
