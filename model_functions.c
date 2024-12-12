@@ -34,8 +34,8 @@ float** create_adj_matrix_float_square(int layers, int nodes_per_layer){
  * Since this is a fully connected FeedForward neural network we will represent the edges as follows: 0 = no connection, positive = edge from left to right (going forward); negative = edge from right to left (backwards)
  * @return matrices_vector (float***). This is a vector, each element of this vector contains the matrices of the weights for each layer of dimension (nodes_per_layer x nodes_per_layer), (yes, this neural network is a square)
  */
-float*** create_FF_model_matrices(int layers, int nodes_per_layer){
-    float*** matrices_vector[layers];   // Creating the vector to store the matrices
+float** create_FF_model_matrices(int layers, int nodes_per_layer){
+    float** matrices_vector[layers];   // Creating the vector to store the matrices
 
     for (int i = 0; i < nodes_per_layer; i++){
         float** matrix = create_matrix_float(nodes_per_layer, nodes_per_layer); // creating the matrix of nodes x nodes
@@ -59,7 +59,7 @@ float*** create_FF_model_matrices(int layers, int nodes_per_layer){
     return(matrices_vector);
 }
 
-void print_matrix_vector_float(float*** matrices_vector, int layers, int nodes_per_layer){
+void print_matrix_vector_float(float** matrices_vector, int layers, int nodes_per_layer){
     for (int layer = 0; layer < layers; layer++){
         print_matrix_float(matrices_vector[layer], nodes_per_layer, nodes_per_layer);
     }

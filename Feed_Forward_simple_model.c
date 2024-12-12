@@ -31,34 +31,37 @@ typedef struct {
 } neuron; 
 */
 
+
+
+
+
 #include "settings.h"
 #include "matrix.h"
 #include "model_functions.h"
-//  TODO --> DONE I should probably make a file with the data structure definitions. 
-//  TODO --> DONE Should I add a different file containing the functions to every layer?
 
 void train(int feedback){
     //  TODO Training function goes here.
 }
 
 /**
- * function to test the new functions
+ * @brief function to test the new functions
  */
 void test1(){
+    printf("%d\n", VERBOSE);
     int layers = 4;
     int nodes_per_layer = 4;
-    #if VERBOSE
+    
     printf ("given value to layers %d, and nodesperlayer %d", layers, nodes_per_layer);
-    #endif
+    
     float*** matrices_vector = create_FF_model_matrices(layers, nodes_per_layer);
-    #if VERBOSE
+    #if VERBOSE == 1
     printf("given value to matrices_vector %e", matrices_vector);
     #endif
     print_matrix_vector_float(matrices_vector, layers, nodes_per_layer);
 
 }
 
-int main(int argc, char **argv){
+int main(){
 
     test1();
 
