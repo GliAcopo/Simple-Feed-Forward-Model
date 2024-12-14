@@ -154,13 +154,13 @@ void print_matrix_float(float** matrix_pointer, int rows, int columns){
     if (matrix_pointer != NULL){
         for (int i = 0; i < rows; i++){
             if (matrix_pointer[i] == NULL){
-                    printf("--- NULL ---"); // Prints null if a null pointer is found
+                    printf("--- NULL ---");         // Prints null if a null pointer is found
             } else {
                 for (int j = 0; j < columns; j++){
                     printf("%f ", matrix_pointer[i][j]);
                 }
             }
-        printf("\n");   // newline for column row
+        printf("\n");                               // newline for column row
         }
     } else {
         printf("\n--- invalid matrix pointer ---\n");
@@ -226,9 +226,9 @@ MatrixError change_value_matrix(float** matrix_pointer, int row, int column, flo
             
     // This logic cheks if the value was actually changed correctly
     if (matrix_pointer[row][column] == value_to_change){
-        return RETURN_TRUE; // Since the value got actually changed, we return a success with Error = false
+        return RETURN_TRUE;                 // Since the value got actually changed, we return a success with Error = false
     } else {
-        return MATRIX_ERROR_NULL_POINTER; // returns -1 as a general error if the value wasn't actually changed
+        return MATRIX_ERROR_NULL_POINTER;   // returns -1 as a general error if the value wasn't actually changed
     }
 
 }
@@ -252,7 +252,7 @@ float get_value_matrix(float** matrix_pointer, int row, int column){
  * @brief it's just a function I run in order to test if everything works correctly
  * 
  */
-void test(){
+void testmat(){
     int i = 2;
     int j = i;
 

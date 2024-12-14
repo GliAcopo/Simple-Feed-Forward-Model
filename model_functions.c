@@ -35,14 +35,14 @@ float** create_adj_matrix_float_square(int layers, int nodes_per_layer){
  * @return matrices_vector (float***). This is a vector, each element of this vector contains the matrices of the weights for each layer of dimension (nodes_per_layer x nodes_per_layer), (yes, this neural network is a square)
  */
 float*** create_FF_model_matrices(int layers, int nodes_per_layer){
-    float*** matrices_vector = (float ***)malloc(layers * sizeof(float**));   // Creating the vector to store the matrices
+    float*** matrices_vector = (float ***)malloc(layers * sizeof(float**));                         // Creating the vector to store the matrices
 
     for (int i = 0; i < layers; i++){
-        float** matrix = create_matrix_float(nodes_per_layer, nodes_per_layer); // creating the matrix of nodes x nodes
+        float** matrix = create_matrix_float(nodes_per_layer, nodes_per_layer);                     // creating the matrix of nodes x nodes
         matrix = init_matrix_to_float_value(matrix, nodes_per_layer, nodes_per_layer, (float)1);    // initiating the matrix to value 1 to symbolise the connections
 
         // security checks to identify problem in matrix creation{
-            int check = verify_matrix(matrix, nodes_per_layer); // verifiyng that the matrix is valid
+            int check = verify_matrix(matrix, nodes_per_layer);                                     // verifiyng that the matrix is valid
             if (check < 0){ 
                 printf("\n verify_matrix returned an error: %d\n", check);
                 return(NULL);
@@ -55,7 +55,7 @@ float*** create_FF_model_matrices(int layers, int nodes_per_layer){
         //}
 
         matrices_vector[i] = matrix;
-        // free_float_matrix(matrix, nodes_per_layer); THIS DOESN'T WORK memory gets freed too fast
+        // free_float_matrix(matrix, nodes_per_layer); THIS DOESN'T WORK: memory getting freed is memory containing the matrices
     }
     return(matrices_vector);
 }
