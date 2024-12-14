@@ -19,6 +19,7 @@ HEADERS = matrix.h model_functions.h settings.h
 OBJ_DYNAMIC = dynamic_matrix.o
 OBJ_MODEL = model_functions.o
 OBJ_FEED = Feed_Forward_simple_model.o
+OBJ_NODES = matrix_functions.o
 
 # Default Target
 all: $(TARGET)
@@ -41,7 +42,7 @@ Feed_Forward_simple_model.o: $(SRC_FEED) $(HEADERS)
 
 # Clean Build Artifacts
 clean:
-	rm -f $(OBJ_DYNAMIC) $(OBJ_MODEL) $(OBJ_FEED) $(TARGET)
+	rm -f $(OBJ_DYNAMIC) $(OBJ_MODEL) $(OBJ_FEED) $(OBJ_NODES) $(TARGET)
 
 # Phony Targets
 .PHONY: all clean
