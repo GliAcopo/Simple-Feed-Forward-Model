@@ -23,3 +23,18 @@ typedef struct {
     double delta;                   // the "error"
 
 } Node;
+
+/**
+ * @brief This is the layer of the model, it contains the array of nodes in the layer (top to bottom, left to right) and the relative adj matrix 
+ */
+typedef struct Layer
+{
+    int layer_number;        // The identifier of the layer, starts from 0.
+    Node *nodes;
+    float** adj_matrix;
+}Layer;
+
+
+Layer init_layer(int layer_number, Node* array_of_nodes_present_in_the_layer, float*** vector_containing_the_matrices){
+
+}
