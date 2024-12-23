@@ -19,10 +19,10 @@ typedef enum {
 */
 
 /**
- * @brief Creates a matrix of floats with specified rows and columns.
+ * @brief Creates a matrix of doubles with specified rows and columns.
  *
  * This function dynamically allocates memory for a matrix represented as a
- * pointer to an array of pointers, each pointing to an array of floats.
+ * pointer to an array of pointers, each pointing to an array of doubles.
  * The function creates the Matrix as a pointer to a vector of pointers, each pointer in said vector is a pointer to another vector which contains all the values.
  * to better explain: the matrix is a pointer, this pointer references a vector, this vector (columns) cotains j pointers, each of these pointers reference a vector (rows) wich contains the values of the matrix
  *
@@ -30,10 +30,10 @@ typedef enum {
  * @param columns Number of columns in the matrix.
  * @return Pointer to the created matrix, or NULL if allocation fails.
  */
-float** create_matrix_float(int rows, int columns){
+double** create_matrix_double(int rows, int columns){
 
     // Allocate mem for pointers to rows
-    float** matrix = (float **)malloc(rows * sizeof(float*));
+    double** matrix = (double **)malloc(rows * sizeof(double*));
     if (matrix == NULL){
         printf("Error in mem allocation for rows\n");
         return(NULL);
@@ -41,7 +41,7 @@ float** create_matrix_float(int rows, int columns){
 
     // Allocate mem for row values
     for (int i = 0; i < rows; i++){
-        matrix[i] = (float *)malloc(columns * sizeof(float));
+        matrix[i] = (double *)malloc(columns * sizeof(double));
         if (matrix[i] == NULL){
             printf("Error in mem allocation for column %d\n", i);
             return(NULL);
@@ -52,15 +52,15 @@ float** create_matrix_float(int rows, int columns){
   
 
 /**
- * @brief Initialize the given matrix cells all to a given FLOAT type variable
+ * @brief Initialize the given matrix cells all to a given double type variable
  * 
  * @param matrix_pointer 
  * @param rows 
  * @param columns 
  * @param value The value that is going to bewritten in every cell
- * @return float** if the matrix is initialized correctly, else return a NULL
+ * @return double** if the matrix is initialized correctly, else return a NULL
  */
-float** init_matrix_to_float_value(float** matrix_pointer, int rows, int columns, float value){
+double** init_matrix_to_double_value(double** matrix_pointer, int rows, int columns, double value){
     /*
     if (matrix_pointer == NULL){
         printf("Error: Cannot initialize a NULL matrix.\n");
@@ -86,7 +86,7 @@ float** init_matrix_to_float_value(float** matrix_pointer, int rows, int columns
  * @param value 
  * @return MatrixError = 1 if all elements are equal to value (true), 0 if at least one element is different from value (false)
  */
-MatrixError check_if_all_elements_of_matrix_are_equal_to_value(float** matrix_pointer, int rows, int columns, float value){
+MatrixError check_if_all_elements_of_matrix_are_equal_to_value(double** matrix_pointer, int rows, int columns, double value){
     if (matrix_pointer == NULL){
         return MATRIX_ERROR_NULL_POINTER;
     }
@@ -110,7 +110,7 @@ MatrixError check_if_all_elements_of_matrix_are_equal_to_value(float** matrix_po
  * @param matrix_pointer 
  * @param rows 
  */
-void free_float_matrix(float** matrix_pointer, int rows){
+void free_double_matrix(double** matrix_pointer, int rows){
 
     for (int i = 0; i < rows; i++){
         free(matrix_pointer[i]);
@@ -128,7 +128,7 @@ void free_float_matrix(float** matrix_pointer, int rows){
  * @param columns 
  * @return MatrixError = {1, -1, -3...}. RETURN_TRUE = (1) if no null pointers are recognised; The number is negative if any exeptions are met -> If the exeption is in the rows, then the row number is given by the equation (-1)*(row_number + 3), so that a negative value is given when an error is encountered; MATRIX_ERROR_NULL_POINTER = -1 if the matrix is a NULL pointer
  */
-MatrixError verify_matrix(float** matrix_pointer, int rows){
+MatrixError verify_matrix(double** matrix_pointer, int rows){
     
     if (matrix_pointer == NULL){
         return MATRIX_ERROR_NULL_POINTER;
@@ -149,7 +149,7 @@ MatrixError verify_matrix(float** matrix_pointer, int rows){
  * @param rows 
  * @param columns 
  */
-void print_matrix_float(float** matrix_pointer, int rows, int columns){
+void print_matrix_double(double** matrix_pointer, int rows, int columns){
     printf("\n");
     if (matrix_pointer != NULL){
         for (int i = 0; i < rows; i++){
@@ -169,7 +169,7 @@ void print_matrix_float(float** matrix_pointer, int rows, int columns){
 }
 
 [[deprecated("Use verify_matrix followed by change_matrix_value instead")]]
-int change_value_matrix_secure(float** matrix_pointer, int row, int column, float value_to_change){
+int change_value_matrix_secure(double** matrix_pointer, int row, int column, double value_to_change){
     /* DEPRECATED --> it is much better to verify the maatrix first with verify_matrix function, as this function runs every test every time it is called on the same matrix. If you want to change the calue on a matrix you are going to access many times then it is better to run first verify_matrix to check the matrix once and then run change_matrix_value
     This function aims to change a value in the matrix in the indicated column and row, with the given value.
     this function will handle the errors related to types and unexpected behaviour in pointers 
@@ -205,7 +205,7 @@ int change_value_matrix_secure(float** matrix_pointer, int row, int column, floa
 }
 
 /**
- * @brief Changes the value in the matrix specified by the given coordinates to another float value specified by input 
+ * @brief Changes the value in the matrix specified by the given coordinates to another double value specified by input 
  * 
  * @param matrix_pointer 
  * @param row 
@@ -213,7 +213,7 @@ int change_value_matrix_secure(float** matrix_pointer, int row, int column, floa
  * @param value_to_change 
  * @return int 
  */
-MatrixError change_value_matrix(float** matrix_pointer, int row, int column, float value_to_change){
+MatrixError change_value_matrix(double** matrix_pointer, int row, int column, double value_to_change){
 
     #if VERBOSE
         printf("Previous matrix element was %f --> ", matrix_pointer[row][column]);
@@ -239,9 +239,9 @@ MatrixError change_value_matrix(float** matrix_pointer, int row, int column, flo
  * @param matrix_pointer 
  * @param row 
  * @param column 
- * @return float, the value
+ * @return double, the value
  */
-float get_value_matrix(float** matrix_pointer, int row, int column){
+double get_value_matrix(double** matrix_pointer, int row, int column){
     #if VERBOSE
         printf("%f\n", matrix_pointer[row][column]);
     #endif
@@ -256,19 +256,19 @@ void testmat(){
     int i = 2;
     int j = i;
 
-    float** matrix = create_matrix_float(i, j);
-    print_matrix_float(matrix, i, j);
-    init_matrix_to_float_value(matrix, i, j, 0.1);
-    print_matrix_float(matrix, i, j);
+    double** matrix = create_matrix_double(i, j);
+    print_matrix_double(matrix, i, j);
+    init_matrix_to_double_value(matrix, i, j, 0.1);
+    print_matrix_double(matrix, i, j);
 
     change_value_matrix(matrix, 0, 0, 27);
-    print_matrix_float(matrix, i, j);
+    print_matrix_double(matrix, i, j);
 
-    free_float_matrix(matrix, i);
+    free_double_matrix(matrix, i);
     change_value_matrix(matrix, 0, 0, 27);
     matrix = NULL;
     
     change_value_matrix(matrix, 0, 0, 27);
-    print_matrix_float(matrix, i, j);
+    print_matrix_double(matrix, i, j);
 }
 

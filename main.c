@@ -55,11 +55,11 @@ void test1(){
     
     printf ("given value to layers %d, and nodesperlayer %d\n", layers, nodes_per_layer);
     
-    float*** matrices_vector = create_FF_model_matrices(layers, nodes_per_layer);
+    double*** matrices_vector = create_FF_model_matrices(layers, nodes_per_layer);
     #if VERBOSE == 1
         printf("given value to matrices_vector %p\n", matrices_vector);
     #endif
-    print_matrix_vector_float(matrices_vector, layers, nodes_per_layer);
+    print_matrix_vector_double(matrices_vector, layers, nodes_per_layer);
 
 }
 
@@ -70,7 +70,7 @@ int main(){
     /*
     #define LIVELLI 4
     #define NODI_PER_LIVELLO 4
-    float** matrix = create_adj_matrix_float_square(LIVELLI, NODI_PER_LIVELLO);
+    double** matrix = create_adj_matrix_double_square(LIVELLI, NODI_PER_LIVELLO);
 
     // For efficiency's sake, I'll check the user's preferences once and then I'll do two loops.
     // One for the automatic training and one for the manual training. 

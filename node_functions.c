@@ -5,14 +5,14 @@
 
 /*  Since every node needs an activation function ad a threshold funtion I'll use a pointer to function in every node to point to said functions.
     */
-typedef float (*activation_function)(float x);
-typedef float (*threshold_function)(float x);
+typedef double (*activation_function)(double x);
+typedef double (*threshold_function)(double x);
 
 /**
  * @brief A struct representing each node of the model
  * 
  * @param index(int): the index is the identifier of the node, the "label" that represents the node numerically. It is advisable to not use the same label for more than one Node since there is't a system to verify uniquity. 
- * @param output(double): The output value that is given by the node, it is a float value by default.
+ * @param output(double): The output value that is given by the node, it is a double value by default.
  * @param bias(double): -> "a bias value allows you to shift the activation function to the left or right" -> https://stackoverflow.com/questions/2480650/what-is-the-role-of-the-bias-in-neural-networks
  * @param activation(activation_function): Pointer to the node function
  * @param threshold(threshold_function): Pointer to Node function. Facultative function for the activation of the node
@@ -37,7 +37,7 @@ typedef struct {
  * @param nodes(Node): An array of the nodes contained in the layer; the array goes top to bottom, left to right
  * @param rows_adj_matrix(int): The number of rows the adj matrix has
  * @param columns_adj_matrix(int): The number of rows the adj matrix has
- * @param adj_matrix(float**): The adj matrix of the layer
+ * @param adj_matrix(double**): The adj matrix of the layer
  */
 typedef struct Layer
 {
@@ -45,10 +45,10 @@ typedef struct Layer
     Node* nodes;
     int rows_adj_matrix;
     int columns_adj_matrix;
-    float** adj_matrix;
+    double** adj_matrix;
 }Layer;
 
 
-Layer init_layer(int layer_number, Node* array_of_nodes_present_in_the_layer, float*** vector_containing_the_matrices){
+Layer init_layer(int layer_number, Node* array_of_nodes_present_in_the_layer, double*** vector_containing_the_matrices){
 
 }
