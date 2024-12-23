@@ -1,16 +1,24 @@
+/**
+ * @file settings.h
+ * @author your name (you@domain.com)
+ * @brief This header file purpose is to share compiler macros, types, variable definitions... Between all the code files of this model
+ * @version 0.2
+ * @date 2024-12-23
+ */
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#define VERBOSE 1
-#define autoMode 0  // This variable is in boolean logic, and is used for the choice between auto training and standard training.
+#define DEBUG    FALSE
+#define VERBOSE  FALSE       // This variable will trigger *way more* debug messages if activated 
+#define autoMode TRUE      // This variable is in boolean logic, and is used for the choice between auto training and standard training.
 
 /**
- * @brief just a simple enum to use bool logic if needed
- * 
+ * @brief just a simple enum to create a "bool" convention in this project
+ * @return TRUE = 1 / FALSE = 0
  */
 typedef enum Bool{
-    TRUE = 0,
-    FALSE = 1,
+    TRUE = 1,
+    FALSE = 0,
 } Bool;
 
 #endif

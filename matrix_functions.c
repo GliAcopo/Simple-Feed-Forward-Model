@@ -1,5 +1,5 @@
 /* devo creare delle funzioni capaci di creare e gestire una tabella di archi di un grafo di dimensioni pari al numero di nodi*/
-#include "matrix.h"
+#include "matrix_functions.h"
 #include <stdio.h>
 #include <stdlib.h>
 

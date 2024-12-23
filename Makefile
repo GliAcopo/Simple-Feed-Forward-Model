@@ -1,33 +1,33 @@
 # Makefile
 
 # Compiler and Flags
-CC = gcc
-CFLAGS = -Wall -Wextra -g
+CC         = gcc
+CFLAGS     = -Wall -Wextra -g
 
 # Target Executable
-TARGET = Feed_Forward_simple_model.a.out
+TARGET     = main.a.out
 
 # Source Files
+SRC_MAIN   = main.c
 SRC_MATRIX = matrix_functions.c
-SRC_MODEL = model_functions.c
-SRC_FEED = Feed_Forward_simple_model.c
-SRC_NODES = node_functions.c
+SRC_MODEL  = model_functions.c
+SRC_NODE   = node_functions.c
 
 # Header Files
-HEADERS = matrix.h model_functions.h settings.h node_functions.h
+HEADERS    = matrix_functions.h model_functions.h settings.h node_functions.h
 
 # Object Files
 OBJ_MATRIX = matrix_functions.o
-OBJ_MODEL = model_functions.o
-OBJ_FEED = Feed_Forward_simple_model.o
-OBJ_NODES = node_functions.o
+OBJ_MODEL  = model_functions.o
+OBJ_MAIN   = main.o
+OBJ_NODE   = node_functions.o
 
 # Default Target
 all: $(TARGET)
 
 # Link Object Files to Create Executable
-$(TARGET): $(OBJ_MATRIX) $(OBJ_MODEL) $(OBJ_FEED) $(OBJ_NODES)
-	$(CC) $(CFLAGS) -o $(TARGET) $(OBJ_MATRIX) $(OBJ_MODEL) $(OBJ_FEED) $(OBJ_NODES)
+$(TARGET): $(OBJ_MATRIX) $(OBJ_MODEL) $(OBJ_MAIN) $(OBJ_NODE)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJ_MATRIX) $(OBJ_MODEL) $(OBJ_MAIN) $(OBJ_NODE)
 
 # Compile matrix_functions.c to matrix_functions.o
 matrix_functions.o: $(SRC_MATRIX) $(HEADERS)
@@ -36,18 +36,18 @@ matrix_functions.o: $(SRC_MATRIX) $(HEADERS)
 # Compile model_functions.c to model_functions.o
 model_functions.o: $(SRC_MODEL) $(HEADERS)
 	$(CC) $(CFLAGS) -c $(SRC_MODEL)
+main.o: $(SRC_MAIN) $(HEADERS)
 
-# Compile Feed_Forward_simple_model.c to Feed_Forward_simple_model.o
-Feed_Forward_simple_model.o: $(SRC_FEED) $(HEADERS)
-	$(CC) $(CFLAGS) -c $(SRC_FEED)
+# Compile main.c to main.o
+	$(CC) $(CFLAGS) -c $(SRC_MAIN)
 
-# Compile Feed_Forward_simple_model.c to Feed_Forward_simple_model.o
-node_functions.o: $(SRC_NODES) $(HEADERS)
-	$(CC) $(CFLAGS) -c $(SRC_NODES)
+# Compile main.c to main.o
+node_functions.o: $(SRC_NODE) $(HEADERS)
+	$(CC) $(CFLAGS) -c $(SRC_NODE)
 
 # Clean Build Artifacts
 clean:
-	rm -f $(OBJ_MATRIX) $(OBJ_MODEL) $(OBJ_FEED) $(OBJ_NODES) $(TARGET)
+	rm -f $(OBJ_MATRIX) $(OBJ_MODEL) $(OBJ_MAIN) $(OBJ_NODE) $(TARGET)
 
 # Phony Targets
 .PHONY: all clean

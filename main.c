@@ -37,7 +37,7 @@ typedef struct {
 #include <stdio.h>
 #include <stdlib.h>
 #include "settings.h"
-#include "matrix.h"
+#include "matrix_functions.h"
 #include "model_functions.h"
 #include "node_functions.h"
 

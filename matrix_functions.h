@@ -1,5 +1,5 @@
-#ifndef MATRIX_H
-#define MATRIX_H
+#ifndef MATRIX_FUNCTIONS_H
+#define MATRIX_FUNCTIONS_H
 
 // Enumeration for matrix error codes
 typedef enum {
@@ -20,4 +20,4 @@ void print_matrix_float(float** matrix_pointer, int rows, int columns);
 int change_value_matrix_secure(float** matrix_pointer, int row, int column, float value_to_change);
 MatrixError change_value_matrix(float** matrix_pointer, int row, int column, float value_to_change);
 
-#endif // MATRIX_H
+#endif // MATRIX_FUNCTIONS_H

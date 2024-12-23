@@ -1,4 +1,4 @@
-#include "matrix.h"
+#include "matrix_functions.h"
 #include "model_functions.h"
 #include "settings.h"
 #include <stdio.h>
