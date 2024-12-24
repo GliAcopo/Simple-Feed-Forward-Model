@@ -30,9 +30,9 @@ double** create_adj_matrix_double_square(int layers, int nodes_per_layer){
 }
 
 /**
- * @brief This function will create a vector of matrices, each of the matrices will contain the weights of the edges connected to the nodes.
+ * @brief This function will create a vector of matrices, each of the matrices will contain the weights of the edges connected to the nodes. The result to expect is: 1 matrix for the input layer (composed of all 1's to not interfere with the input)
  * Since this is a fully connected FeedForward neural network we will represent the edges as follows: 0 = no connection, positive = edge from left to right (going forward); negative = edge from right to left (backwards)
- * @return matrices_vector (double***). This is a vector, each element of this vector contains the matrices of the weights for each layer of dimension (nodes_per_layer x nodes_per_layer), (yes, this neural network is a square)
+ * @return matrices_vector (double***). This is a vector, each element of this vector contains the matrices of the weights for each layer of dimension (nodes_per_layer x nodes_per_layer), (yes, this neural network is a square).
  */
 double*** create_FF_model_matrices(int layers, int nodes_per_layer){
     double*** matrices_vector = (double ***)malloc(layers * sizeof(double**));                         // Creating the vector to store the matrices
@@ -65,5 +65,3 @@ void print_matrix_vector_double(double*** matrices_vector, int layers, int nodes
         print_matrix_double(matrices_vector[layer], nodes_per_layer, nodes_per_layer);
     }
 }
-
-

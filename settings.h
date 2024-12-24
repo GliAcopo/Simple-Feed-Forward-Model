@@ -11,6 +11,7 @@
 #define DEBUG    FALSE
 #define VERBOSE  FALSE       // This variable will trigger *way more* debug messages if activated 
 #define autoMode TRUE      // This variable is in boolean logic, and is used for the choice between auto training and standard training.
+#define MORE     FALSE      // This variable basically implements extra code that is deemed redundant. But may come in handy.
 
 /**
  * @brief just a simple enum to create a "bool" convention in this project
