@@ -197,11 +197,13 @@ Output calculate_output(const Model* used_model, Prompt prompt) {
     }
 
     // Process the layers after the input layer (i > 0)
-    size_t i = 1;                                           // Since we use layer information even outside the loop, we need the variable to remain visible 
+    size_t i = 1;                                                                                                   // Since we use layer information even outside the loop, we need the variable to remain visible 
     for (i < used_model->number_of_layers_in_the_model; i++;) {
-        // When we arrive at the end of the model we exit the loop
-        if (used_model->model_weights[i] == NULL){
-            break;
+        if (used_model->model_weights[i] == NULL){                                                                  // When we arrive at the end of the model we simply calculate the output layer node function and the bias
+            for(size_t k = 0; k < used_model->model_layers[i].rows_of_adj_matrix; k++){
+                layer_input[k] = used_model->model_layers[i].layer_array_of_nodes[k].activation(layer_input[k]);    // Passing the input trough the output layer and registering it in the layer_input for the sake of convenience.
+                layer_input[k] += used_model->model_layers[i].layer_array_of_nodes[k].bias;                         // Summing the bias of the node
+            }
         }
 
         size_t output_size = used_model->model_layers[i].columns_of_adj_matrix;
@@ -215,8 +217,6 @@ Output calculate_output(const Model* used_model, Prompt prompt) {
             output.data   = NULL;
             return output;
         }
-
-
         // 1) Multiply the previous layer outputs by the adjacency matrix 
         // 2) Pass the result to the activation function of each node
         for (size_t col = 0; col < output_size; col++) {
@@ -229,12 +229,10 @@ Output calculate_output(const Model* used_model, Prompt prompt) {
             // Pass the sum through the layer's activation function
             layer_output[col] = used_model->model_layers[i].layer_array_of_nodes[col].activation(sum);
         }
-
         // Use the output of this layer as input for the next one:
         free(layer_input);
         layer_input = layer_output;
     }
-
     // Once finished, 'layer_input' should contain the final output.
     output.length = used_model->model_layers[i-1].columns_of_adj_matrix;
     output.data   = layer_input;
