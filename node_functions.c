@@ -3,10 +3,18 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-/*  Since every node needs an activation function ad a threshold funtion I'll use a pointer to function in every node to point to said functions.
-    */
+/*  Since every node needs an activation function ad a threshold funtion I'll use a pointer to function in every node to point to said functions.*/
 typedef double (*activation_function)(double x);
 typedef double (*threshold_function)(double x);
+
+double mySigmoid(double x) {
+    return 1.0 / (1.0 + exp(-x));
+}
+
+double myThresholdFunc(double x) {
+    // Just a dummy example threshold
+    return (x > 0.5) ? 1.0 : 0.0;
+}
 
 /**
  * @brief A struct representing each node of the model
@@ -29,6 +37,27 @@ typedef struct Node{
     double delta;                   // the "error"
 
 } Node;
+
+/**
+ * @brief Create a node object
+ * 
+ * @param index 
+ * @param bias 
+ * @param activation 
+ * @param threshold 
+ * @return Node 
+ */
+Node create_node(int index, double bias, activation_function activation, threshold_function threshold){
+    Node n;
+    n.index = index;
+    n.output = 0.0;         // Default output
+    n.bias = bias;
+    n.activation = activation;
+    n.threshold = threshold; 
+    n.delta = 0.0;          // Default delta
+    return n;
+}
+
 /*USE CASE:
 double mySigmoid(double x) {
     return 1.0 / (1.0 + exp(-x));
@@ -61,6 +90,38 @@ typedef struct Layer
     #endif
 }Layer;
 
+Layer create_layer(size_t num_nodes,
+                   __uint64_t rows_of_adj_matrix,
+                   __uint64_t columns_of_adj_matrix,
+                   activation_function activation,
+                   threshold_function threshold){
+    Layer layer;
+    layer.rows_of_adj_matrix = rows_of_adj_matrix;
+    layer.columns_of_adj_matrix = columns_of_adj_matrix;
+
+    // Allocate space for the nodes
+    layer.layer_array_of_nodes = malloc(num_nodes * sizeof(Node));
+    if (layer.layer_array_of_nodes == NULL) {
+        fprintf(stderr, "Failed to allocate layer_array_of_nodes\n");
+        // For a real project, handle errors more gracefully
+        Layer empty = {0};
+        return empty;
+    }
+
+    // Initialize each node
+    for (size_t i = 0; i < num_nodes; i++) {
+        // Example: bias=0.0 for all nodes
+        layer.layer_array_of_nodes[i] = create_node(
+            (int)i,            /* index */
+            0.0,               /* bias  */
+            activation,        /* activation  */
+            threshold          /* threshold   */
+        );
+    }
+
+    return layer;
+}
+
 /**
  * @brief This structs encapsulates every aspect of the model, everything can be accessed from here.
  * 
@@ -80,21 +141,21 @@ typedef struct Model{
 /**
  * @brief A first try for a function to Create a model object (not complete, I'm not so sure I want it to be a pointer)
  * 
- * @param name 
+ * @param name(const char*): The name of the model, passed as a dynamically allocated array of chars.abort
+ * @param model_layer(Layer*): The pointer to the array of layers.
+ * @param model_weights: The array of matrices containing the weights of the model.
  * @return Model* 
  */
-Model* create_model(const char* name) {
+Model* create_model(const char* name, Layer* model_layers, double*** model_weights) {
     Model* model = malloc(sizeof(Model));
     if (!model) {
         fprintf(stderr, "Allocation error\n");
         return NULL;
     }
-
-    // Initialize fields, for example:
+    // Initialize fields
     model->number_of_layers_in_the_model = 0;
-    model->model_layers = NULL;
-    model->model_weights = NULL;
-
+    model->model_layers = model_layers;
+    model->model_weights = model_weights;
     // Allocate space for the name and copy it
     model->model_name = malloc(strlen(name) + 1);
     if (!model->model_name) {
@@ -108,7 +169,7 @@ Model* create_model(const char* name) {
 }
 
 
-Layer init_layer(int layer_number, Node* array_of_nodes_present_in_the_layer, double*** vector_containing_the_matrices){
+Layer init_layer(int layer_number, Node * array_of_nodes_present_in_the_layer, double*** vector_containing_the_matrices){
 
 }
 
@@ -193,7 +254,9 @@ Output calculate_output(const Model* used_model, Prompt prompt) {
     }
 
     for (size_t j = 0; j < first_layer_size; j++) {
-        layer_input[j] = used_model->model_layers[0].layer_array_of_nodes[j].activation(prompt.data[j]);
+        prompt.data[j] += used_model->model_layers[0].layer_array_of_nodes[j].bias;                                 // Summing the bias of the node
+        layer_input[j] = used_model->model_layers[0].layer_array_of_nodes[j].activation(prompt.data[j]);            // Calculating the activation function of the node using the input
+        used_model->model_layers[0].layer_array_of_nodes[j].output = layer_input[j];                                // Saving the output in the node's output for later training.
     }
 
     // Process the layers after the input layer (i > 0)
@@ -201,13 +264,14 @@ Output calculate_output(const Model* used_model, Prompt prompt) {
     for (i < used_model->number_of_layers_in_the_model; i++;) {
         if (used_model->model_weights[i] == NULL){                                                                  // When we arrive at the end of the model we simply calculate the output layer node function and the bias
             for(size_t k = 0; k < used_model->model_layers[i].rows_of_adj_matrix; k++){
-                layer_input[k] = used_model->model_layers[i].layer_array_of_nodes[k].activation(layer_input[k]);    // Passing the input trough the output layer and registering it in the layer_input for the sake of convenience.
                 layer_input[k] += used_model->model_layers[i].layer_array_of_nodes[k].bias;                         // Summing the bias of the node
+                layer_input[k] = used_model->model_layers[i].layer_array_of_nodes[k].activation(layer_input[k]);    // Passing the input trough the output layer and registering it in the layer_input for the sake of convenience.
+                used_model->model_layers[i].layer_array_of_nodes[k].output = layer_input[k];
             }
         }
 
         size_t output_size = used_model->model_layers[i].columns_of_adj_matrix;
-        size_t input_size  = used_model->model_layers[i].rows_of_adj_matrix; // same as the size of layer_input
+        size_t input_size  = used_model->model_layers[i].rows_of_adj_matrix;
 
         double* layer_output = malloc(output_size * sizeof(double));
         if (layer_output == NULL) {
@@ -226,8 +290,8 @@ Output calculate_output(const Model* used_model, Prompt prompt) {
             }
             // If there's a bias term
             sum += used_model->model_layers[i].layer_array_of_nodes[col].bias;
-            // Pass the sum through the layer's activation function
-            layer_output[col] = used_model->model_layers[i].layer_array_of_nodes[col].activation(sum);
+            layer_output[col] = used_model->model_layers[i].layer_array_of_nodes[col].activation(sum);      // Pass the sum through the layer's activation function
+            used_model->model_layers[i].layer_array_of_nodes[col].output = layer_output[col];
         }
         // Use the output of this layer as input for the next one:
         free(layer_input);
@@ -239,4 +303,110 @@ Output calculate_output(const Model* used_model, Prompt prompt) {
     free(layer_input);
     
     return output;
+}
+
+
+void test_calculate_output(void) 
+{
+    // 1) Create a small Model with two layers:
+    //    - First layer: 2 nodes (treated as "input layer")
+    //    - Second layer: 1 node (treated as "output layer")
+    Model testModel;
+    testModel.model_name = "TestModel";
+    testModel.number_of_layers_in_the_model = 2;
+
+    // Allocate layer array
+    testModel.model_layers = malloc(testModel.number_of_layers_in_the_model * sizeof(Layer));
+    if (!testModel.model_layers) {
+        fprintf(stderr, "Failed to allocate model_layers\n");
+        return;
+    }
+
+    // Create first layer (2 nodes, for example)
+    // rows_of_adj_matrix = 2 (same as # of nodes)
+    // columns_of_adj_matrix = 2 as well, because it is the "shape" for adjacency to next layer
+    // In practice, you can define it any way that matches your logic
+    testModel.model_layers[0] =
+        create_layer(/* num_nodes */ 2,
+                     /* rows_of_adj_matrix */ 2,
+                     /* columns_of_adj_matrix */ 2,
+                     mySigmoid,
+                     myThresholdFunc);
+
+    // Create second layer (1 node)
+    // rows_of_adj_matrix = 2 (it expects 2 inputs from the previous layer)
+    // columns_of_adj_matrix = 1 (this layer has 1 node)
+    testModel.model_layers[1] =
+        create_layer(/* num_nodes */ 1,
+                     /* rows_of_adj_matrix */ 2,
+                     /* columns_of_adj_matrix */ 1,
+                     mySigmoid,
+                     NULL);
+
+    // 2) Allocate weight matrices
+    // We need one weight matrix for each layer beyond layer 0. 
+    // Typically you'd have model_weights[i] of shape [rows_of_adj_matrix][columns_of_adj_matrix].
+    testModel.model_weights = malloc(testModel.number_of_layers_in_the_model * sizeof(double**));
+    if (!testModel.model_weights) {
+        fprintf(stderr, "Failed to allocate model_weights\n");
+        free(testModel.model_layers);
+        return;
+    }
+
+    // For the first layer (index=0), we sometimes don't need a matrix if it’s purely input, 
+    // but let's set it to NULL for consistency:
+    testModel.model_weights[0] = NULL;
+
+    // For the second layer (index=1), we need a [2 x 1] matrix
+    //   2 = # of inputs coming from layer 0
+    //   1 = # of nodes in layer 1
+    testModel.model_weights[1] = malloc(2 * sizeof(double*));
+    for (size_t r = 0; r < 2; r++) {
+        testModel.model_weights[1][r] = malloc(1 * sizeof(double));
+    }
+    // Example values
+    // W = [ [0.5],
+    //       [0.8] ]
+    testModel.model_weights[1][0][0] = 0.5;
+    testModel.model_weights[1][1][0] = 0.8;
+
+    // For demonstration, set bias for the single node in layer 1
+    testModel.model_layers[1].layer_array_of_nodes[0].bias = 0.1;
+
+    // 3) Create a Prompt with 2 inputs
+    Prompt p;
+    p.length = 2;
+    p.data   = malloc(2 * sizeof(double));
+    p.data[0] = 0.2; // Input #1
+    p.data[1] = 0.3; // Input #2
+
+    // 4) Calculate output
+    Output result = calculate_output(&testModel, p);
+
+    // 5) Print results
+    printf("calculate_output => length: %zu, [", result.length);
+    for (size_t i = 0; i < result.length; i++) {
+        printf("%f", result.data[i]);
+        if (i < result.length - 1) printf(", ");
+    }
+    printf("]\n");
+
+    // Cleanup:
+    free(p.data);
+    free(result.data);
+
+    // Free layer node arrays
+    free(testModel.model_layers[0].layer_array_of_nodes);
+    free(testModel.model_layers[1].layer_array_of_nodes);
+
+    // Free weight matrices
+    // [1] has shape 2x1
+    for (size_t r = 0; r < 2; r++) {
+        free(testModel.model_weights[1][r]);
+    }
+    free(testModel.model_weights[1]);
+    free(testModel.model_weights);
+
+    // Free the layers array
+    free(testModel.model_layers);
 }
