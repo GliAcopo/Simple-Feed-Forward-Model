@@ -2,6 +2,9 @@
 #include "node_functions.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <stddef.h>
+#include <math.h>
+#include <string.h>
 
 /*  Since every node needs an activation function ad a threshold funtion I'll use a pointer to function in every node to point to said functions.*/
 typedef double (*activation_function)(double x);
@@ -121,6 +124,17 @@ Layer create_layer(size_t num_nodes,
 
     return layer;
 }
+/*
+Layer init_layer(int layer_number, Node * array_of_nodes_present_in_the_layer, double*** vector_containing_the_matrices){
+    //// TODO -> Make this function.
+    (void)layer_number;
+    (void)array_of_nodes_present_in_the_layer;
+    (void)vector_containing_the_matrices;
+    
+    Layer empty_layer = {0};
+    return empty_layer;
+}
+*/
 
 /**
  * @brief This structs encapsulates every aspect of the model, everything can be accessed from here.
@@ -168,10 +182,6 @@ Model* create_model(const char* name, Layer* model_layers, double*** model_weigh
     return model;
 }
 
-
-Layer init_layer(int layer_number, Node * array_of_nodes_present_in_the_layer, double*** vector_containing_the_matrices){
-
-}
 
 /**
  * @brief A simple struct to incapsulate the prompt array and the lenght of the array
@@ -236,7 +246,7 @@ Output calculate_output(const Model* used_model, Prompt prompt) {
     // Check the prompt length vs. input layer size
     if (prompt.length != first_layer_size) {
         printf("Invalid prompt length. "
-               "Accepted length by model: %d; Given prompt length: %d.\n",
+               "Accepted length by model: %ld; Given prompt length: %ld.\n",
                used_model->model_layers[0].rows_of_adj_matrix,
                prompt.length);
         output.length = 0;
@@ -261,7 +271,7 @@ Output calculate_output(const Model* used_model, Prompt prompt) {
 
     // Process the layers after the input layer (i > 0)
     size_t i = 1;                                                                                                   // Since we use layer information even outside the loop, we need the variable to remain visible 
-    for (i < used_model->number_of_layers_in_the_model; i++;) {
+    for (; i < used_model->number_of_layers_in_the_model; i++) {
         if (used_model->model_weights[i] == NULL){                                                                  // When we arrive at the end of the model we simply calculate the output layer node function and the bias
             for(size_t k = 0; k < used_model->model_layers[i].rows_of_adj_matrix; k++){
                 layer_input[k] += used_model->model_layers[i].layer_array_of_nodes[k].bias;                         // Summing the bias of the node

@@ -27,7 +27,7 @@ all: $(TARGET)
 
 # Link Object Files to Create Executable
 $(TARGET): $(OBJ_MATRIX) $(OBJ_MODEL) $(OBJ_MAIN) $(OBJ_NODE)
-	$(CC) $(CFLAGS) -o $(TARGET) $(OBJ_MATRIX) $(OBJ_MODEL) $(OBJ_MAIN) $(OBJ_NODE)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJ_MATRIX) $(OBJ_MODEL) $(OBJ_MAIN) $(OBJ_NODE) -lm
 
 # Compile matrix_functions.c to matrix_functions.o
 matrix_functions.o: $(SRC_MATRIX) $(HEADERS)

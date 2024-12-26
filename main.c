@@ -66,6 +66,7 @@ void test1(){
 int main(){
 
     test1();
+    void test_calculate_output(void);
 
     /*
     #define LIVELLI 4
