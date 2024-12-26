@@ -44,8 +44,8 @@ n.activation = mySigmoid; ???
  * 
  * @param layer_number(int): The identifier of the layer, starts from 0
  * @param layer_array_of_nodes(Node): An array of the nodes contained in the layer; the array goes top to bottom, left to right
- * @param rows_adj_matrix(__uint64_t): The number of rows the adj matrix has
- * @param columns_adj_matrix(__uint64_t): The number of rows the adj matrix has
+ * @param rows_adj_matrix(__uint64_t): The number of rows the adj matrix has (The number of nodes at the left)
+ * @param columns_adj_matrix(__uint64_t): The number of rows the adj matrix has (The number of nodes at the right)
  * @param adj_matrix(double**): The adj matrix of the layer
  */
 typedef struct Layer
@@ -64,17 +64,48 @@ typedef struct Layer
 /**
  * @brief This structs encapsulates every aspect of the model, everything can be accessed from here.
  * 
+ * @param model_name(char*): The name of the model, acts as a dynamically allocated array of characters.
  * @param number_of_layers_in_the_model(__uint64_t): is the number of layers the model possesses.
  * @param model_layers(Layer): An ordered array containing the layers of the model, the first layer is the INPUT the last layer the OUTPUT while everything else the SECRET LAYER
  * @param model_weights(double***): An ordered array containing the pointer to the weights matrices. 
  */
 typedef struct Model{
-
+    char* model_name;
     __uint64_t number_of_layers_in_the_model;
     Layer* model_layers;
     double*** model_weights;
 
 }Model;
+
+/**
+ * @brief A first try for a function to Create a model object (not complete, I'm not so sure I want it to be a pointer)
+ * 
+ * @param name 
+ * @return Model* 
+ */
+Model* create_model(const char* name) {
+    Model* model = malloc(sizeof(Model));
+    if (!model) {
+        fprintf(stderr, "Allocation error\n");
+        return NULL;
+    }
+
+    // Initialize fields, for example:
+    model->number_of_layers_in_the_model = 0;
+    model->model_layers = NULL;
+    model->model_weights = NULL;
+
+    // Allocate space for the name and copy it
+    model->model_name = malloc(strlen(name) + 1);
+    if (!model->model_name) {
+        fprintf(stderr, "Allocation error\n");
+        free(model);  // Clean up partially allocated model
+        return NULL;
+    }
+    strcpy(model->model_name, name);
+
+    return model;
+}
 
 
 Layer init_layer(int layer_number, Node* array_of_nodes_present_in_the_layer, double*** vector_containing_the_matrices){
@@ -132,55 +163,83 @@ typedef struct Output{
 /**
  * @brief Calculates the output using the given prompt and model. 
  * 
- * @param prompt(array of doubles): The prompt is what will be processed by the model to create an output, the single parameters inside the array will be fed to the INPUT nodes (first element of the array goes into the top node, first node in list). ATTENTION: If the list of parameters terminates early an error is given (I would actually like to do that the missing parameters will be assumed as 0.)
- * @param model(Model): The model struct, the model that will be used to calculate the output.
- * @return (Output_struct): The array of output values calculated by the model. (The order is first element of the array comes from the top node)
+ * @param prompt (array of doubles): The prompt that will be processed by the model
+ * @param used_model (pointer to Model): The model struct used to calculate the output
+ * @return (Output): The array of output values calculated by the model
  */
-Output calculate_output(Model used_model, Prompt prompt){
+Output calculate_output(const Model* used_model, Prompt prompt) {
     Output output;
-    // Calculate output of the first layer (to handle invalid prompts) and then continue with next layers.
-    if (prompt.length != used_model.model_layers[0].rows_of_adj_matrix){ //// TODO: control if the number of input nodes is actually the layers
-        //// logic for handling incorrect prompts goes here
-        printf("Invalid pompt lenght. Accepted lenght by model: %d; Given prompt lenght: %d.\n", used_model.model_layers[0].rows_of_adj_matrix, prompt.length);
-        output.length = 0; output.data = NULL;
-        return(output);
-    }
-    else{
-        // For the first layer we just need to pass everything trough the activation function of the neurons.
-        size_t first_layer_size = used_model.model_layers[0].rows_of_adj_matrix;        // Number of nodes in the first layer
-        double* input_layer_result = malloc(first_layer_size * sizeof(double));         // Allocate space for the first layer’s result
-        if (input_layer_result == NULL) {                                               // Handle allocation failure
-            printf("Not enough memory in input layer result allocation\n");
-            output.length = 0; output.data = NULL;
-            return(output);
-        }
-        for (size_t j; j < first_layer_size; j++){
-            input_layer_result[j] = used_model.model_layers[0].layer_array_of_nodes[j].activation(prompt.data[j]);
-        }
-        // Now handle layers 1..N-1 (since layer 0 is handled above)
-        for (size_t i = 1; i < used_model.number_of_layers_in_the_model; i++) {
-            double* layer_result = malloc(used_model.model_layers[i].rows_of_adj_matrix * sizeof(double));
-            if (layer_result == NULL) {                                                         // Handle allocation failure
-                free(input_layer_result);
-                printf("Not enough memory in layer %d result allocation\n", i);
-                output.length = 0; output.data = NULL;
-                return(output);
-            }
-        // 1) Multiply the previous results by the adjacency matrix
-        // 2) Pass the result to the activation function of each node
 
-        // E.g. (pseudocode):
-        // for each node j in layer i:
-        //     double sum = 0;
-        //     for k in 0..(previous layer size - 1):
-        //         sum += (some_matrix[i][j][k]) * input_layer_result[k];
-        //     sum += bias; // optional
-        //     layer_result[j] = used_model.model_layers[i]
-        //                              .layer_array_of_nodes[j]
-        //                              .activation(sum);
-        }
-        free(input_layer_result);
-        return(output); //// maybe I should make an output struct, like for prompts so that I alaways know the dimension of the output array 
+    // Check the prompt length vs. input layer size
+    if (prompt.length != used_model->model_layers[0].rows_of_adj_matrix) {
+        printf("Invalid prompt length. "
+               "Accepted length by model: %d; Given prompt length: %d.\n",
+               used_model->model_layers[0].rows_of_adj_matrix,
+               prompt.length);
+        output.length = 0;
+        output.data   = NULL;
+        return output;
     }
+
+    // Handle first layer: simply apply activation functions directly on prompt inputs
+    size_t first_layer_size = used_model->model_layers[0].rows_of_adj_matrix;
+    double* input_layer_result = malloc(first_layer_size * sizeof(double));
+    if (input_layer_result == NULL) {
+        printf("Not enough memory in input layer result allocation.\n");
+        output.length = 0;
+        output.data   = NULL;
+        return output;
+    }
+
+    for (size_t j = 0; j < first_layer_size; j++) {
+        input_layer_result[j] =
+            used_model->model_layers[0].layer_array_of_nodes[j].activation(prompt.data[j]);
+    }
+
+    // Process the remaining layers
+    for (size_t i = 1; i < used_model->number_of_layers_in_the_model; i++) {
+        size_t current_layer_size = used_model->model_layers[i].rows_of_adj_matrix;
+        double* layer_result      = malloc(current_layer_size * sizeof(double));
+        if (layer_result == NULL) {
+            free(input_layer_result);
+            printf("Not enough memory in layer %zu result allocation.\n", i);
+            output.length = 0;
+            output.data   = NULL;
+            return output;
+        }
+
+
+        // 2) Pass the result to the activation function of each node
+        //
+        // Pseudocode example:
+        // for (size_t j = 0; j < current_layer_size; j++) {
+        //     double sum = 0.0;
+        //     for (size_t k = 0; k < first_layer_size; k++) {
+        //         sum += used_model->model_weights[i][j][k] * input_layer_result[k];
+        //     }
+        //     sum += (bias if present);
+        //     layer_result[j] =
+        //         used_model->model_layers[i].layer_array_of_nodes[j].activation(sum);
+        // }
+        //
+        // Then free the old input_layer_result and point it to the new layer_result:
+        // free(input_layer_result);
+        // input_layer_result = layer_result;
+        //
+        // Move on to the next layer...
+        if (used_model->model_weights[i] == NULL){          // When we arrive at the end of the model we exit the loop
+            break;
+        }
+        // 1) Multiply the previous layer outputs by the adjacency matrix 
+    }
+
+    // Once finished, 'input_layer_result' should contain the final output.
+    // If you'd like to store that in output.data, do something like:
+    // output.length = size_of_output_layer;
+    // output.data   = input_layer_result;
+
+    // For now, just freeing to avoid leaks (adjust as needed):
+    free(input_layer_result);
     
+    return output;
 }
