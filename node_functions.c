@@ -315,7 +315,6 @@ Output calculate_output(const Model* used_model, Prompt prompt) {
     return output;
 }
 
-
 void test_calculate_output(void) 
 {
     // 1) Create a small Model with two layers:

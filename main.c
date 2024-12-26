@@ -41,10 +41,6 @@ typedef struct {
 #include "model_functions.h"
 #include "node_functions.h"
 
-void train(int feedback){
-    //  TODO Training function goes here.
-}
-
 /**
  * @brief function to test the new functions
  */
@@ -65,7 +61,7 @@ void test1(){
 
 int main(){
 
-    test1();
+    //test1();
     void test_calculate_output(void);
 
     /*
