@@ -17,7 +17,7 @@ typedef double (*threshold_function)(double x);
  * @param activation(activation_function): Pointer to the node function
  * @param threshold(threshold_function): Pointer to Node function. Facultative function for the activation of the node
  */
-typedef struct {
+typedef struct Node{
     int index;                      // Index of the node (es: node 1, node 2)
     double output;                  // The output that the node calculated
     double bias;                    // Bias -> "a bias value allows you to shift the activation function to the left or right" -> https://stackoverflow.com/questions/2480650/what-is-the-role-of-the-bias-in-neural-networks
@@ -40,9 +40,9 @@ n.activation = mySigmoid; ???
 */
 
 /**
- * @brief This is the layer of the model, it contains the array of nodes in the layer (top to bottom, left to right) and the relative adj matrix 
+ * @brief A layer is a series of nodes separated by ONE GAP in wich there are the edges. It contains the array of nodes in the layer (top to bottom, left to right).
  * 
- * @param layer_number(int): The identifier of the layer, starts from 0
+ * @param layer_number(int): The identifier of the layer, starts from 0 ATTENTION: If MORE macro is not active then this doesn't exist
  * @param layer_array_of_nodes(Node): An array of the nodes contained in the layer; the array goes top to bottom, left to right
  * @param rows_adj_matrix(__uint64_t): The number of rows the adj matrix has (The number of nodes at the left)
  * @param columns_adj_matrix(__uint64_t): The number of rows the adj matrix has (The number of nodes at the right)
@@ -160,18 +160,20 @@ typedef struct Output{
  * adj.Matrix. This would be exactly like multipliyng the output for each node! Obtaining an input for the next nodes.
  * I actually knew that modern models used matrices to do their calculations, but now I understand why and how!
  */
+
 /**
  * @brief Calculates the output using the given prompt and model. 
  * 
- * @param prompt (array of doubles): The prompt that will be processed by the model
+ * @param prompt (Prompt Object): The prompt that will be processed by the model
  * @param used_model (pointer to Model): The model struct used to calculate the output
- * @return (Output): The array of output values calculated by the model
+ * @return (Output Object): The array of output values calculated by the model
  */
 Output calculate_output(const Model* used_model, Prompt prompt) {
     Output output;
 
+    size_t first_layer_size = used_model->model_layers[0].rows_of_adj_matrix;
     // Check the prompt length vs. input layer size
-    if (prompt.length != used_model->model_layers[0].rows_of_adj_matrix) {
+    if (prompt.length != first_layer_size) {
         printf("Invalid prompt length. "
                "Accepted length by model: %d; Given prompt length: %d.\n",
                used_model->model_layers[0].rows_of_adj_matrix,
@@ -182,9 +184,8 @@ Output calculate_output(const Model* used_model, Prompt prompt) {
     }
 
     // Handle first layer: simply apply activation functions directly on prompt inputs
-    size_t first_layer_size = used_model->model_layers[0].rows_of_adj_matrix;
-    double* input_layer_result = malloc(first_layer_size * sizeof(double));
-    if (input_layer_result == NULL) {
+    double* layer_input = malloc(first_layer_size * sizeof(double));
+    if (layer_input == NULL) {
         printf("Not enough memory in input layer result allocation.\n");
         output.length = 0;
         output.data   = NULL;
@@ -192,16 +193,23 @@ Output calculate_output(const Model* used_model, Prompt prompt) {
     }
 
     for (size_t j = 0; j < first_layer_size; j++) {
-        input_layer_result[j] =
-            used_model->model_layers[0].layer_array_of_nodes[j].activation(prompt.data[j]);
+        layer_input[j] = used_model->model_layers[0].layer_array_of_nodes[j].activation(prompt.data[j]);
     }
 
-    // Process the remaining layers
-    for (size_t i = 1; i < used_model->number_of_layers_in_the_model; i++) {
-        size_t current_layer_size = used_model->model_layers[i].rows_of_adj_matrix;
-        double* layer_result      = malloc(current_layer_size * sizeof(double));
-        if (layer_result == NULL) {
-            free(input_layer_result);
+    // Process the layers after the input layer (i > 0)
+    size_t i = 1;                                           // Since we use layer information even outside the loop, we need the variable to remain visible 
+    for (i < used_model->number_of_layers_in_the_model; i++;) {
+        // When we arrive at the end of the model we exit the loop
+        if (used_model->model_weights[i] == NULL){
+            break;
+        }
+
+        size_t output_size = used_model->model_layers[i].columns_of_adj_matrix;
+        size_t input_size  = used_model->model_layers[i].rows_of_adj_matrix; // same as the size of layer_input
+
+        double* layer_output = malloc(output_size * sizeof(double));
+        if (layer_output == NULL) {
+            free(layer_input);
             printf("Not enough memory in layer %zu result allocation.\n", i);
             output.length = 0;
             output.data   = NULL;
@@ -209,37 +217,28 @@ Output calculate_output(const Model* used_model, Prompt prompt) {
         }
 
 
-        // 2) Pass the result to the activation function of each node
-        //
-        // Pseudocode example:
-        // for (size_t j = 0; j < current_layer_size; j++) {
-        //     double sum = 0.0;
-        //     for (size_t k = 0; k < first_layer_size; k++) {
-        //         sum += used_model->model_weights[i][j][k] * input_layer_result[k];
-        //     }
-        //     sum += (bias if present);
-        //     layer_result[j] =
-        //         used_model->model_layers[i].layer_array_of_nodes[j].activation(sum);
-        // }
-        //
-        // Then free the old input_layer_result and point it to the new layer_result:
-        // free(input_layer_result);
-        // input_layer_result = layer_result;
-        //
-        // Move on to the next layer...
-        if (used_model->model_weights[i] == NULL){          // When we arrive at the end of the model we exit the loop
-            break;
-        }
         // 1) Multiply the previous layer outputs by the adjacency matrix 
+        // 2) Pass the result to the activation function of each node
+        for (size_t col = 0; col < output_size; col++) {
+        double sum = 0.0;
+            for (size_t row = 0; row < input_size; row++) {
+                sum += layer_input[row] * used_model->model_weights[i][row][col];
+            }
+            // If there's a bias term
+            sum += used_model->model_layers[i].layer_array_of_nodes[col].bias;
+            // Pass the sum through the layer's activation function
+            layer_output[col] = used_model->model_layers[i].layer_array_of_nodes[col].activation(sum);
+        }
+
+        // Use the output of this layer as input for the next one:
+        free(layer_input);
+        layer_input = layer_output;
     }
 
-    // Once finished, 'input_layer_result' should contain the final output.
-    // If you'd like to store that in output.data, do something like:
-    // output.length = size_of_output_layer;
-    // output.data   = input_layer_result;
-
-    // For now, just freeing to avoid leaks (adjust as needed):
-    free(input_layer_result);
+    // Once finished, 'layer_input' should contain the final output.
+    output.length = used_model->model_layers[i-1].columns_of_adj_matrix;
+    output.data   = layer_input;
+    free(layer_input);
     
     return output;
 }
