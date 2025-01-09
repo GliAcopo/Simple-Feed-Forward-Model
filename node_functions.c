@@ -272,7 +272,8 @@ Output calculate_output(const Model* used_model, Prompt prompt) {
     // Process the layers after the input layer (i > 0)
     size_t i = 1;                                                                                                   // Since we use layer information even outside the loop, we need the variable to remain visible 
     for (; i < used_model->number_of_layers_in_the_model; i++) {
-        if (used_model->model_weights[i] == NULL){                                                                  // When we arrive at the end of the model we simply calculate the output layer node function and the bias
+        // When we arrive at the end of the model we simply calculate the output layer node function and the bias
+        if (used_model->model_weights[i] == NULL){                                                                  
             for(size_t k = 0; k < used_model->model_layers[i].rows_of_adj_matrix; k++){
                 layer_input[k] += used_model->model_layers[i].layer_array_of_nodes[k].bias;                         // Summing the bias of the node
                 layer_input[k] = used_model->model_layers[i].layer_array_of_nodes[k].activation(layer_input[k]);    // Passing the input trough the output layer and registering it in the layer_input for the sake of convenience.
@@ -283,7 +284,9 @@ Output calculate_output(const Model* used_model, Prompt prompt) {
         size_t output_size = used_model->model_layers[i].columns_of_adj_matrix;
         size_t input_size  = used_model->model_layers[i].rows_of_adj_matrix;
 
-        double* layer_output = malloc(output_size * sizeof(double));
+        double* layer_output = malloc(output_size * sizeof(double));                // We dinamically allocate the vector of the output model
+        ////    TODO  add here the layer output to the output array 
+        ////    TODO  
         if (layer_output == NULL) {
             free(layer_input);
             printf("Not enough memory in layer %zu result allocation.\n", i);
