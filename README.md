@@ -1,24 +1,11 @@
-# Simple Feed Forward Neural Network in C
+# Simple Feed-Forward Neural Network in C  
 
-## Description
+## Description  
 
-This project is a basic implementation of a feed-forward neural network using the C language and graph theory. The main goal is to learn how these models work by building one from scratch.
-Note that the comments I write on my code are probably more complete and descriptive than this README.
+This project provides a foundational implementation of a feed-forward neural network using the C programming language and principles of graph theory. The primary objective is to gain a deeper understanding of how such models operate by constructing one from the ground up.  
 
-## Features
+The [Documentation.odt](Documentation.odt) file serves as a comprehensive guide to the program’s internal mechanics. Since the project's main purpose is educational, the documentation includes detailed commentary on the design decisions made throughout the development process.  
 
-- **Feed Forward Architecture:** Data flows from input to output (still in progress).
-- **Graph Representation:** Uses adjacency matrices to represent node connections.
-- **Activation Functions:** Includes basic activation functions (like Sigmoid).
+## License  
 
-
-This project is part of my learning journey with C programming and neural networks. The code is still under development and might not follow best practices. 
-
-**Feedback and suggestions are welcome!**
-
-
-## License
-
-This project is licensed under the **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)**. This means others can share and adapt the code for non-commercial purposes, as long as credit is given to the original author. For more details, see the [LICENSE](LICENSE) file.
-
----
+This project is licensed under the **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)**. This permits sharing and adapting the code for non-commercial purposes, provided appropriate credit is given to the original author. For more information, refer to the [LICENSE](LICENSE) file.  
