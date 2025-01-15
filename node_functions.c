@@ -86,16 +86,16 @@ typedef struct Layer
     int layer_number;        // The identifier of the layer, starts from 0.
     #endif
     Node* layer_array_of_nodes;
-    __uint64_t rows_of_adj_matrix;
-    __uint64_t columns_of_adj_matrix;
+    size_t rows_of_adj_matrix;
+    size_t columns_of_adj_matrix;
     #if MORE        // It is probably reduntant since we already have all the matrices in the Model struct
     double** adj_matrix;
     #endif
 }Layer;
 
 Layer create_layer(size_t num_nodes,
-                   __uint64_t rows_of_adj_matrix,
-                   __uint64_t columns_of_adj_matrix,
+                   size_t rows_of_adj_matrix,
+                   size_t columns_of_adj_matrix,
                    activation_function activation,
                    threshold_function threshold){
     Layer layer;
@@ -146,7 +146,7 @@ Layer init_layer(int layer_number, Node * array_of_nodes_present_in_the_layer, d
  */
 typedef struct Model{
     char* model_name;
-    __uint64_t number_of_layers_in_the_model;
+    size_t number_of_layers_in_the_model;
     Layer* model_layers;
     double*** model_weights;
 
