@@ -140,7 +140,7 @@ Layer init_layer(int layer_number, Node * array_of_nodes_present_in_the_layer, d
  * @brief This structs encapsulates every aspect of the model, everything can be accessed from here.
  * 
  * @param model_name(char*): The name of the model, acts as a dynamically allocated array of characters.
- * @param number_of_layers_in_the_model(__uint64_t): is the number of layers the model possesses.
+ * @param number_of_layers_in_the_model(size_t): is the number of layers the model possesses.
  * @param model_layers(Layer): An ordered array containing the layers of the model, the first layer is the INPUT the last layer the OUTPUT while everything else the SECRET LAYER
  * @param model_weights(double***): An ordered array containing the pointer to the weights matrices. 
  */
@@ -312,12 +312,14 @@ Output calculate_output(const Model* used_model, Prompt prompt) {
     // Process the layers after the input layer (i > 0)
     size_t i = 1;                                                                                                   // Since we use layer information even outside the loop, we need the variable to remain visible 
     for (; i < used_model->number_of_layers_in_the_model; i++) {
-        // When we arrive at the end of the model we simply calculate the output layer node function and the bias
+        /** @brief When we arrive at the end of the model we simply calculate the output layer node function and the bias */
         if (used_model->model_weights[i] == NULL){                                                                  
             for(size_t k = 0; k < used_model->model_layers[i].rows_of_adj_matrix; k++){
-                layer_input[k] += used_model->model_layers[i].layer_array_of_nodes[k].bias;                         // Summing the bias of the node
-                layer_input[k] = used_model->model_layers[i].layer_array_of_nodes[k].activation(layer_input[k]);    // Passing the input trough the output layer and registering it in the layer_input for the sake of convenience.
-                // output.inputs_to_layers[i][k] = layer_input[k];                                                     // We register the output of the last layer for backpropagation
+                /** TODO: il problema è che l'array di input da dare in pasto all'ultimo layer ora come ora è vuoto!  */
+                output.layer_inputs_and_outputs[i][k + used_model->model_layers[i].rows_of_adj_matrix] = used_model->model_layers[i]
+                                                                                        .layer_array_of_nodes[k]
+                                                                                        .activation(output.layer_inputs_and_outputs[i][k] + 
+                                                                                        used_model->model_layers[i].layer_array_of_nodes[k].bias);    // Passing the input trough the output layer and registering it in the layer_input for the sake of convenience.
             }
             break;
         }
@@ -325,20 +327,12 @@ Output calculate_output(const Model* used_model, Prompt prompt) {
         size_t output_size = used_model->model_layers[i].columns_of_adj_matrix;
         size_t input_size  = used_model->model_layers[i].rows_of_adj_matrix;
 
-        double* layer_output = malloc(output_size * sizeof(double));                // We dinamically allocate the vector of the output model
-        ////    TODO  add here the layer output to the output array 
-        ////    TODO  
-        if (layer_output == NULL) {
-            free(layer_input);
-            printf("Not enough memory in layer %zu result allocation.\n", i);
-            return empty_output();
-        }
         // 1) Multiply the previous layer outputs by the adjacency matrix 
         // 2) Pass the result to the activation function of each node
         for (size_t col = 0; col < output_size; col++) {
         double sum = 0.0;
             for (size_t row = 0; row < input_size; row++) {
-                sum += layer_input[row] * used_model->model_weights[i][row][col];
+                sum += output.layer_inputs_and_outputs[i-1][row + used_model->model_layers[i].rows_of_adj_matrix] * used_model->model_weights[i][row][col];
             }
             // If there's a bias term
             sum += used_model->model_layers[i].layer_array_of_nodes[col].bias;
