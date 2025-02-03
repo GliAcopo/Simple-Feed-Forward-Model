@@ -78,7 +78,6 @@ n.activation = mySigmoid; ???
  * @param layer_array_of_nodes(Node): An array of the nodes contained in the layer; the array goes top to bottom, left to right
  * @param rows_adj_matrix(__uint64_t): The number of rows the adj matrix has (The number of nodes at the left)
  * @param columns_adj_matrix(__uint64_t): The number of rows the adj matrix has (The number of nodes at the right)
- * @param adj_matrix(double**): The adj matrix of the layer
  */
 typedef struct Layer
 {
@@ -88,7 +87,6 @@ typedef struct Layer
     Node* layer_array_of_nodes;
     size_t rows_of_adj_matrix;
     size_t columns_of_adj_matrix;
-    // double** adj_matrix;
 }Layer;
 
 Layer create_layer(size_t num_nodes,
@@ -312,6 +310,7 @@ Output calculate_output(Prompt* prompt, Model* model){
         }
     #endif
 
+    // MAIN LOOP
     for (size_t i; i < model->number_of_layers_in_the_model - 1; i++){
         /** 1) pass the input trough each node */
         output.layer_outputs[i] = malloc(model->model_layers[i].rows_of_adj_matrix * sizeof(double));
@@ -320,32 +319,40 @@ Output calculate_output(Prompt* prompt, Model* model){
             return empty_output();
         }
         for (size_t j; j < model->model_layers[i].rows_of_adj_matrix; j++){
-            /** @todo */
             /** 2) register output of each node into the output array */
+            double input_to_node = output.layer_inputs[i][j] + model->model_layers[i].layer_array_of_nodes[j].bias; // variable to enhance code readability
+            output.layer_outputs[i][j] = model->model_layers[i].layer_array_of_nodes[j].activation(input_to_node);      
         }
 
         /** @note To myself, we need to register the result of the multiplication of the weight matrix into the NEXT INPUT ARRAY
          * but this can't be done for the LAST LAYER since after that there isn't another layer, nor there are any adj matrices
-         * so basically everything done after this block of comments needs to pay attention to this
-         * @attention If you intend on separating the last layer to make it outside of the loop the you should change the time it loops to 
-         * model->number_of_layers_in_the_model -1
-         */
+         * so basically everything done after this block of comments needs to pay attention to this 
+         **/
+        output.layer_inputs[i+1] = malloc(model->model_layers[i+1].rows_of_adj_matrix * sizeof(double));
+        /** @todo: matrix multiplication needs to be adapted */
+        for (size_t col = 0; col < output_size; col++) {
+            double sum = 0.0;
+            for (size_t row = 0; row < input_size; row++) {
+                sum += output.layer_inputs_and_outputs[i-1][row + used_model->model_layers[i].rows_of_adj_matrix] * used_model->model_weights[i][row][col];
+            }
 
     }
     /** 5) Handling last layer (output layer) */
     size_t const k = model->number_of_layers_in_the_model - 1; // enhancing readability
     output.length = model->model_layers[k].rows_of_adj_matrix; // is this varible really useful? It can be obtained from model->model_layers[k].rows_of_adj_matrix where k = model->number_of_layers_in_the_model - 1
-    
+    /** 5.1) pass the input trough each node */
     output.layer_outputs[k] = malloc(model->model_layers[k].rows_of_adj_matrix * sizeof(double));
-    if (output.layer_outputs[k] == NULL){
+    if (output.layer_outputs[k] == NULL)
+    {
         fprintf(stderr, "Error in %s: memory allocation error. 'output.layer_outputs[%zu]' (last layer) is NULL.\n", __func__, k);
         return empty_output();
     }
-    for (size_t j; j < model->model_layers[k].rows_of_adj_matrix; j++){
-        /** @todo */
-        /** 2) register output of each node into the output array */
+    for (size_t j; j < model->model_layers[k].rows_of_adj_matrix; j++)
+    {
+        /** 5.2) register output of each node into the output array */
+        double input_to_node = output.layer_inputs[k][j] + model->model_layers[k].layer_array_of_nodes[j].bias;
+        output.layer_outputs[k][j] = model->model_layers[k].layer_array_of_nodes[j].activation(input_to_node);
     }
-
     return(output);
 }
 
