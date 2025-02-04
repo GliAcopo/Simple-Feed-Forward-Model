@@ -62,21 +62,12 @@ void test1(){
 int main(){
 
     //test1();
-    void test_calculate_output(void);
+    test_calculate_output();
 
     /*
     #define LIVELLI 4
     #define NODI_PER_LIVELLO 4
     double** matrix = create_adj_matrix_double_square(LIVELLI, NODI_PER_LIVELLO);
-
-    // For efficiency's sake, I'll check the user's preferences once and then I'll do two loops.
-    // One for the automatic training and one for the manual training. 
-    if (autoMode){
-        non_auto_loop();
-    }
-    else{
-        auto_loop();
-    }
     */
    return(0);
 }
