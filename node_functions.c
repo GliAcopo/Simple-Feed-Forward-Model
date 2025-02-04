@@ -372,90 +372,135 @@ Output calculate_output(Prompt* prompt, Model* model){
 
 void test_calculate_output(void) 
 {
+    printf("Starting test_calculate_output()\n");
+
     // 1) Create a small Model with two layers:
-    //    - First layer: 2 nodes (treated as "input layer")
-    //    - Second layer: 1 node (treated as "output layer")
+    //    - First layer: 2 nodes (input layer)
+    //    - Second layer: 1 node (output layer)
     Model testModel;
     testModel.model_name = "TestModel";
     testModel.number_of_layers_in_the_model = 2;
+    printf("Model '%s' with %zu layers\n", testModel.model_name, testModel.number_of_layers_in_the_model);
 
-    // Allocate layer array
+    // Allocate the layer array
+    printf("Allocating model_layers...\n");
     testModel.model_layers = malloc(testModel.number_of_layers_in_the_model * sizeof(Layer));
     if (!testModel.model_layers) {
         fprintf(stderr, "Failed to allocate model_layers\n");
         return;
     }
+    printf("model_layers allocated successfully\n");
 
-    // Create first layer (2 nodes, for example)
-    // rows_of_adj_matrix = 2 (same as # of nodes)
-    // columns_of_adj_matrix = 2 as well, because it is the "shape" for adjacency to next layer
-    // In practice, you can define it any way that matches your logic
-    testModel.model_layers[0] =
-        create_layer(/* num_nodes */ 2,
-                     /* rows_of_adj_matrix */ 2,
-                     /* columns_of_adj_matrix */ 2,
-                     mySigmoid,
-                     myThresholdFunc);
+    // Create first layer: 2 nodes, with a 2x2 adjacency matrix
+    printf("Creating first layer (index 0)...\n");
+    testModel.model_layers[0] = create_layer(
+                                    /* num_nodes */ 2,
+                                    /* rows_of_adj_matrix */ 2,
+                                    /* columns_of_adj_matrix */ 2,
+                                    mySigmoid,
+                                    myThresholdFunc);
+    printf("First layer created\n");
 
-    // Create second layer (1 node)
-    // rows_of_adj_matrix = 2 (it expects 2 inputs from the previous layer)
-    // columns_of_adj_matrix = 1 (this layer has 1 node)
-    testModel.model_layers[1] =
-        create_layer(/* num_nodes */ 1,
-                     /* rows_of_adj_matrix */ 2,
-                     /* columns_of_adj_matrix */ 1,
-                     mySigmoid,
-                     NULL);
+    // Create second layer: 1 node, expecting 2 inputs (so 2x1 matrix)
+    printf("Creating second layer (index 1)...\n");
+    testModel.model_layers[1] = create_layer(
+                                    /* num_nodes */ 1,
+                                    /* rows_of_adj_matrix */ 2,
+                                    /* columns_of_adj_matrix */ 1,
+                                    mySigmoid,
+                                    NULL);
+    printf("Second layer created\n");
 
-    // 2) Allocate weight matrices
-    // We need one weight matrix for each layer beyond layer 0. 
-    // Typically you'd have model_weights[i] of shape [rows_of_adj_matrix][columns_of_adj_matrix].
+    // 2) Allocate weight matrices.
+    // We allocate an array with as many elements as there are layers.
+    // Convention: For layer 0 (input) we don't need weights, so set to NULL.
+    printf("Allocating model_weights array...\n");
     testModel.model_weights = malloc(testModel.number_of_layers_in_the_model * sizeof(double**));
     if (!testModel.model_weights) {
         fprintf(stderr, "Failed to allocate model_weights\n");
         free(testModel.model_layers);
         return;
     }
+    printf("model_weights array allocated successfully\n");
 
-    // For the first layer (index=0), we sometimes don't need a matrix if it’s purely input, 
-    // but let's set it to NULL for consistency:
-    testModel.model_weights[0] = NULL; /** @todo, IN THE CALCULATE OUTPUT FUNCTION WE CONSIDER model_weights[0] AS THE FIRST MATRIX OF THE MODEL */
+    // For layer 0, no weight matrix is needed.
+    testModel.model_weights[0] = NULL;
+    printf("model_weights[0] set to NULL\n");
 
-    // For the second layer (index=1), we need a [2 x 1] matrix
-    //   2 = # of inputs coming from layer 0
-    //   1 = # of nodes in layer 1
+    // For layer 1, allocate a [2 x 1] matrix (2 rows, 1 column)
+    // IMPORTANT: Allocate at index 1, not index 0.
+    printf("Allocating weight matrix for second layer (model_weights[1])...\n");
     testModel.model_weights[0] = malloc(2 * sizeof(double*));
+    if (!testModel.model_weights[1]) {
+        fprintf(stderr, "Failed to allocate weight matrix for layer 1\n");
+        free(testModel.model_layers);
+        free(testModel.model_weights);
+        return;
+    }
     for (size_t r = 0; r < 2; r++) {
         testModel.model_weights[1][r] = malloc(1 * sizeof(double));
+        if (!testModel.model_weights[1][r]) {
+            fprintf(stderr, "Failed to allocate weight matrix row %zu for layer 1\n", r);
+            for (size_t j = 0; j < r; j++) {
+                free(testModel.model_weights[1][j]);
+            }
+            free(testModel.model_weights[1]);
+            free(testModel.model_layers);
+            free(testModel.model_weights);
+            return;
+        }
     }
-    // Example values
-    // W = [ [0.5],
-    //       [0.8] ]
+    printf("Weight matrix for layer 1 allocated successfully\n");
+
+    // Set weight matrix values:
+    // Weight matrix W = [ [0.5],
+    //                     [0.8] ]
+    printf("Setting weight values...\n");
     testModel.model_weights[1][0][0] = 0.5;
     testModel.model_weights[1][1][0] = 0.8;
+    printf("Weights set: W[0][0]=0.5, W[1][0]=0.8\n");
 
-    // For demonstration, set bias for the single node in layer 1
+    // Set bias for the single node in layer 1
+    printf("Setting bias for layer 1 node...\n");
     testModel.model_layers[1].layer_array_of_nodes[0].bias = 0.1;
+    printf("Bias for layer 1 node set to 0.1\n");
 
     // 3) Create a Prompt with 2 inputs
+    printf("Allocating prompt with 2 inputs...\n");
     Prompt p;
     p.length = 2;
-    p.data   = malloc(2 * sizeof(double));
+    p.data = malloc(2 * sizeof(double));
+    if (!p.data) {
+        fprintf(stderr, "Failed to allocate prompt data\n");
+        // Cleanup allocated memory before returning
+        for (size_t r = 0; r < 2; r++) {
+            free(testModel.model_weights[1][r]);
+        }
+        free(testModel.model_weights[1]);
+        free(testModel.model_weights);
+        free(testModel.model_layers);
+        return;
+    }
     p.data[0] = 0.2; // Input #1
     p.data[1] = 0.3; // Input #2
+    printf("Prompt data set: [0.2, 0.3]\n");
 
     // 4) Calculate output
+    printf("Calling calculate_output()...\n");
     Output result = calculate_output(&p, &testModel);
+    printf("Output calculated\n");
 
     // 5) Print results
     printf("calculate_output => length: %zu, [", result.length);
     for (size_t i = 0; i < result.length; i++) {
         printf("%f", result.data[i]);
-        if (i < result.length - 1) printf(", ");
+        if (i < result.length - 1)
+            printf(", ");
     }
     printf("]\n");
 
     // Cleanup:
+    printf("Cleaning up allocated memory...\n");
     free(p.data);
     free(result.data);
 
@@ -463,8 +508,7 @@ void test_calculate_output(void)
     free(testModel.model_layers[0].layer_array_of_nodes);
     free(testModel.model_layers[1].layer_array_of_nodes);
 
-    // Free weight matrices
-    // [1] has shape 2x1
+    // Free weight matrices for layer 1 (2 rows)
     for (size_t r = 0; r < 2; r++) {
         free(testModel.model_weights[1][r]);
     }
@@ -473,4 +517,7 @@ void test_calculate_output(void)
 
     // Free the layers array
     free(testModel.model_layers);
+
+    printf("test_calculate_output() finished successfully.\n");
 }
+
