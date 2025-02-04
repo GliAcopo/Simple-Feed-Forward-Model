@@ -12,7 +12,7 @@ typedef struct Output Output;
 
 // Function declarations without 'struct' keyword
 Prompt create_prompt(size_t length, double* tokens);
-Output calculate_output(const Model* used_model, Prompt prompt);
+Output calculate_output(Prompt* prompt, Model* model);
 void test_calculate_output(void);
 
 #endif // NODE_FUNCTIONS_H

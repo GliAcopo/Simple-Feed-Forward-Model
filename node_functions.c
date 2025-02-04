@@ -295,7 +295,7 @@ Output calculate_output(Prompt* prompt, Model* model){
      * training purposes while also maintaining the main loop as straightforward as possible */
     output.layer_inputs[0] = malloc(prompt->length * sizeof(double*));
     if (output.layer_inputs[0] == NULL){
-        fprintf(stderr, "Error in %s: memory allocation error. 'output.layer_inputs[%zu]' is NULL.\n", __func__, 0);
+        fprintf(stderr, "Error in %s: memory allocation error. 'output.layer_inputs[%d]' is NULL.\n", __func__, 0);
         return empty_output();
     }
     for (size_t i; i < prompt->length; i++){
