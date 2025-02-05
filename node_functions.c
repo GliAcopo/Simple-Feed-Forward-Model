@@ -246,7 +246,7 @@ Output empty_output(){
 
 Output calculate_output(Prompt* prompt, Model* model){
     #if DEBUG
-    fprintf(stderr, "Started checks in %s function with\nprompt: %p\nmodel: %p\n", __func__, prompt, model);
+    fprintf(stderr, "\nStarted checks in %s function with\nprompt: %p\nmodel: %p\n", __func__, prompt, model);
     #endif
     if (prompt == NULL) {
         fprintf(stderr, "Error in %s: 'prompt' is NULL.\n", __func__);
@@ -280,11 +280,13 @@ Output calculate_output(Prompt* prompt, Model* model){
      * @note every layer has a vector of inputs and produces a vector as an output (dimension is the number of nodes), so we need an array of dimension number_of_layers * 2
      * @details this array is structured as follows: starts with the prompt input, follows with the output of the first layer (input-output)
      */
+    DEBUG_PRINT("Allocating space for output.layer_inputs for [%zu] layers in model\n", model->number_of_layers_in_the_model);
     output.layer_inputs = malloc(model->number_of_layers_in_the_model * sizeof(double*));
     if (output.layer_inputs == NULL){
         fprintf(stderr, "Error in %s: memory allocation error. 'output.layer_inputs_and_outputs' is NULL.\n", __func__);
         return empty_output();
     }
+    DEBUG_PRINT("Allocating space for output.layer_outputs for [%zu] layers in model\n", model->number_of_layers_in_the_model);
     output.layer_outputs = malloc(model->number_of_layers_in_the_model * sizeof(double*));
     if (output.layer_outputs == NULL){
         fprintf(stderr, "Error in %s: memory allocation error. 'output.layer_inputs_and_outputs' is NULL.\n", __func__);
@@ -293,27 +295,29 @@ Output calculate_output(Prompt* prompt, Model* model){
 
     /** We copy the prompt into the layer_inputs_and_outputs first array in order for it to be registered for 
      * training purposes while also maintaining the main loop as straightforward as possible */
+    DEBUG_PRINT("Allocating space for first layer's output.layer_inputs[0] with a prompt->length = [%zu]\n", prompt->length);
     output.layer_inputs[0] = malloc(prompt->length * sizeof(double*));
     if (output.layer_inputs[0] == NULL){
         fprintf(stderr, "Error in %s: memory allocation error. 'output.layer_inputs[%d]' is NULL.\n", __func__, 0);
         return empty_output();
     }
-    for (size_t i; i < prompt->length; i++){
+    for (size_t i = 0; i < prompt->length; i++){
         output.layer_inputs[0][i] = prompt->data[i];
     }
-    #if DEBUG
-        printf("Prompt was copied into first input array.\nInput array:\n 1) ");
-        for (size_t i; i < prompt->length; i++){
-            printf("%d, ", output.layer_inputs[0][i]);
+    #if DEBUG ////////////////////////
+        printf("Prompt was copied into first input array. Copied values:\nInput array:\n 1) ");
+        for (size_t i = 0; i < prompt->length; i++){
+            printf("%lf, ", output.layer_inputs[0][i]);
         }
-            printf("Prompt array:\n2) ")
-        for (size_t i; i < prompt->length; i++){
-            printf("%d, ", prompt->data[i]);
+            printf("Prompt array:\n2) ");
+        for (size_t i = 0; i < prompt->length; i++){
+            printf("%lf, ", prompt->data[i]);
         }
     #endif
 
+    DEBUG_PRINT("Entering main loop... Stop value of i should be %zu\n", model->number_of_layers_in_the_model - 1);
     // MAIN LOOP
-    for (size_t i; i < model->number_of_layers_in_the_model - 1; i++){
+    for (size_t i = 0; i < model->number_of_layers_in_the_model - 1; i++){         DEBUG_PRINT("\nLoop at index [%zu]:\n", i); 
         /** 1) pass the input trough each node */
         output.layer_outputs[i] = malloc(model->model_layers[i].rows_of_adj_matrix * sizeof(double));
         if (output.layer_outputs[i] == NULL){
@@ -323,7 +327,8 @@ Output calculate_output(Prompt* prompt, Model* model){
         for (size_t j; j < model->model_layers[i].rows_of_adj_matrix; j++){
             /** 2) register output of each node into the output array */
             double input_to_node = output.layer_inputs[i][j] + model->model_layers[i].layer_array_of_nodes[j].bias; // variable to enhance code readability (input + bias)
-            output.layer_outputs[i][j] = model->model_layers[i].layer_array_of_nodes[j].activation(input_to_node);      
+            output.layer_outputs[i][j] = model->model_layers[i].layer_array_of_nodes[j].activation(input_to_node);
+            DEBUG_PRINT("Passed values trough each node input_to_node[%zu] = %lf -> %lf (= output.layer_outputs[%zu][%zu])", j, input_to_node, output.layer_outputs[i][j], i, j);  
         }
 
         /** MATRIX MULTIPLICATION
@@ -425,12 +430,12 @@ void test_calculate_output(void)
 
     // For layer 0, no weight matrix is needed.
     testModel.model_weights[0] = NULL;
-    printf("model_weights[0] set to NULL\n");
+    printf("model_weights[0] set to %p\n", testModel.model_weights[0]);
 
     // For layer 1, allocate a [2 x 1] matrix (2 rows, 1 column)
     // IMPORTANT: Allocate at index 1, not index 0.
     printf("Allocating weight matrix for second layer (model_weights[1])...\n");
-    testModel.model_weights[0] = malloc(2 * sizeof(double*));
+    testModel.model_weights[1] = malloc(2 * sizeof(double*));
     if (!testModel.model_weights[1]) {
         fprintf(stderr, "Failed to allocate weight matrix for layer 1\n");
         free(testModel.model_layers);
