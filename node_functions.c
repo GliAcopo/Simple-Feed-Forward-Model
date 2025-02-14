@@ -309,13 +309,13 @@ Output calculate_output(Prompt* prompt, Model* model){
         for (size_t i = 0; i < prompt->length; i++){
             printf("%lf, ", output.layer_inputs[0][i]);
         }
-            printf("Prompt array:\n2) ");
+            printf("\nPrompt array:\n2) ");
         for (size_t i = 0; i < prompt->length; i++){
             printf("%lf, ", prompt->data[i]);
         }
     #endif
 
-    DEBUG_PRINT("Entering main loop... Stop value of i should be %zu\n", model->number_of_layers_in_the_model - 1);
+    DEBUG_PRINT("Entering main loop... Stop value of i will be %zu\n", model->number_of_layers_in_the_model - 1);
     // MAIN LOOP
     for (size_t i = 0; i < model->number_of_layers_in_the_model - 1; i++){         DEBUG_PRINT("\nLoop at index [%zu]:\n", i); 
         /** 1) pass the input trough each node */
