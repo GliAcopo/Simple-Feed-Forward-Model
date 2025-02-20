@@ -1,11 +1,26 @@
-# Simple Feed-Forward Neural Network in C  
+# Graph-Based Feed-Forward Neural Network Library in C
 
-## Description  
+## Overview
 
-This project provides a foundational implementation of a feed-forward neural network using the C programming language and principles of graph theory. The primary objective is to gain a deeper understanding of how such models operate by constructing one from the ground up.  
+This repository hosts a library for constructing, training, evaluating, and managing feed-forward neural network models, all implemented in C. This project leverages graph theory and adjacency matrices to represent the network's structure, providing a more "theoretical" perspective on neural network design.
 
-The [Documentation.odt](Documentation.odt) file serves as a comprehensive guide to the program’s internal mechanics. Since the project's main purpose is educational, the documentation includes detailed commentary on the design decisions made throughout the development process.  
+## Key Features
 
+- **Model Construction:** Define neural networks as graphs using nodes and weighted edges, represented through adjacency matrices.
+- **Training Module:** Implement training routines to adjust weights and optimize network performance.
+- **Inference Engine:** Compute outputs from the network trough a given prompt.
+- **Memory Management:** Create and delete models to maintain optimal resource usage.
+- **Demonstrative Example:** Train the network to compute the square root of an integer (provided in binary form), showcasing a practical application of the library.
+
+## Educational Focus
+
+The primary goal of this project is to deepen understanding of feed-forward neural networks by building one from the ground up. Detailed design decisions, implementation insights, and theoretical underpinnings are documented in [Documentation.odt](Documentation.odt).
+
+## Testing
+
+The tests I've done during the development are integrated within the `Tests` folder, where edge cases and incorrect inputs are validated, ensuring the reliability of the library.
+
+---
 
 ## Build
 
