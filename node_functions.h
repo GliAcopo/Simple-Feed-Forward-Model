@@ -41,9 +41,9 @@ typedef struct Node{
 } Node;
 
 //                                          FUNCTION PROTOTYPES
-Node create_node(int index, double bias,
-    activation_function activation,
-    threshold_function threshold);
+Node create_node(int index, double bias, 
+    activation_function activation_function, 
+    threshold_function threshold_function);
 //                                         END FUNCTION PROTOTYPES
 
 /*                      -+-+-+-+-+-+-+-+-+-+-+- END STRUCT NODE -+-+-+-+-+-+-+-+-+-+-+- */

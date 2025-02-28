@@ -52,7 +52,7 @@ void test1(){
 
 }
 
-void test_calculate_output(void) 
+void test_calculate_output_autogen(void) 
 {
     printf("Starting test_calculate_output()\n");
 
@@ -201,6 +201,14 @@ void test_calculate_output(void)
     free(testModel.model_layers);
 
     printf("test_calculate_output() finished successfully.\n");
+}
+
+void test_calculate_output(void){
+    /* To test the functionality of output generation let's create a 3 layer model 
+        1 input, 1 secret, 1 output.
+        Every layer will be composed of 4 nodes
+        To do so we'll only use the given creation functions */
+        Layer input = create_layer(4, 4, 4);
 }
 
 int main(){

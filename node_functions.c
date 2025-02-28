@@ -16,8 +16,8 @@ double mySigmoid(double x) {
     return 1.0 / (1.0 + exp(-x));
 }
 
+// Just a dummy example threshold
 double myThresholdFunc(double x) {
-    // Just a dummy example threshold
     return (x > 0.5) ? 1.0 : 0.0;
 }
 
@@ -32,13 +32,13 @@ double myThresholdFunc(double x) {
  * @param threshold 
  * @return Node 
  */
-Node create_node(int index, double bias, activation_function activation, threshold_function threshold){
+Node create_node(int index, double bias, activation_function activation_function, threshold_function threshold_function){
     Node n;
     n.index = index;
     n.output = 0.0;         // Default output
     n.bias = bias;
-    n.activation = activation;
-    n.threshold = threshold; 
+    n.activation = activation_function;
+    n.threshold = threshold_function; 
     n.delta = 0.0;          // Default delta
     return n;
 }
