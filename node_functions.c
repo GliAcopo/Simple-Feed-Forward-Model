@@ -6,6 +6,8 @@
 #include <math.h>
 #include <string.h>
 
+/* -+-+-+-+-+-+-+-+-+-+-+- THRESHOLD AND ACTIVATION FUNCTIONS -+-+-+-+-+-+-+-+-+-+-+- */
+
 /*  Since every node needs an activation function ad a threshold funtion I'll use a pointer to function in every node to point to said functions.*/
 typedef double (*activation_function)(double x);
 typedef double (*threshold_function)(double x);
@@ -19,27 +21,7 @@ double myThresholdFunc(double x) {
     return (x > 0.5) ? 1.0 : 0.0;
 }
 
-/**
- * @brief A struct representing each node of the model
- * 
- * @param index(int): the index is the identifier of the node, the "label" that represents the node numerically. It is advisable to not use the same label for more than one Node since there is't a system to verify uniquity. 
- * @param output(double): The output value that is given by the node, it is a double value by default.
- * @param bias(double): -> "a bias value allows you to shift the activation function to the left or right" -> https://stackoverflow.com/questions/2480650/what-is-the-role-of-the-bias-in-neural-networks
- * @param activation(activation_function): Pointer to the node function
- * @param threshold(threshold_function): Pointer to Node function. Facultative function for the activation of the node
- */
-typedef struct Node{
-    int index;                      // Index of the node (es: node 1, node 2)
-    double output;                  // The output that the node calculated
-    double bias;                    // Bias -> "a bias value allows you to shift the activation function to the left or right" -> https://stackoverflow.com/questions/2480650/what-is-the-role-of-the-bias-in-neural-networks
-
-    activation_function activation; // Pointer to the node function
-    threshold_function threshold;   // Facultative function for the activation of the node
-
-    // Backpropagation value for the training of the model (not entirely sure how to use it tho...)
-    double delta;                   // the "error"
-
-} Node;
+/* -+-+-+-+-+-+-+-+-+-+-+- NODE -+-+-+-+-+-+-+-+-+-+-+- */
 
 /**
  * @brief Create a node object
@@ -71,23 +53,7 @@ or
 n.activation = mySigmoid; ???
 */
 
-/**
- * @brief A layer is a series of nodes separated by ONE GAP in wich there are the edges. It contains the array of nodes in the layer (top to bottom, left to right).
- * 
- * @param layer_number(int): The identifier of the layer, starts from 0 ATTENTION: If MORE macro is not active then this doesn't exist
- * @param layer_array_of_nodes(Node): An array of the nodes contained in the layer; the array goes top to bottom, left to right
- * @param rows_adj_matrix(__uint64_t): The number of rows the adj matrix has (The number of nodes at the left)
- * @param columns_adj_matrix(__uint64_t): The number of rows the adj matrix has (The number of nodes at the right)
- */
-typedef struct Layer
-{
-    #if MORE        // The layer number isn't really necessary since we already have an ordered array of Layers in the Model struct
-    int layer_number;        // The identifier of the layer, starts from 0.
-    #endif
-    Node* layer_array_of_nodes;
-    size_t rows_of_adj_matrix;
-    size_t columns_of_adj_matrix;
-}Layer;
+/* -+-+-+-+-+-+-+-+-+-+-+- LAYER -+-+-+-+-+-+-+-+-+-+-+- */
 
 Layer create_layer(size_t num_nodes,
                    size_t rows_of_adj_matrix,
@@ -132,21 +98,7 @@ Layer init_layer(int layer_number, Node * array_of_nodes_present_in_the_layer, d
 }
 */
 
-/**
- * @brief This structs encapsulates every aspect of the model, everything can be accessed from here.
- * 
- * @param model_name(char*): The name of the model, acts as a dynamically allocated array of characters.
- * @param number_of_layers_in_the_model(size_t): is the number of layers the model possesses.
- * @param model_layers(Layer): An ordered array containing the layers of the model, the first layer is the INPUT the last layer the OUTPUT while everything else the SECRET LAYER
- * @param model_weights(double***): An ordered array containing the pointer to the weights matrices. 
- */
-typedef struct Model{
-    char* model_name;
-    size_t number_of_layers_in_the_model;
-    Layer* model_layers;
-    double*** model_weights;
-
-}Model;
+/* -+-+-+-+-+-+-+-+-+-+-+- MODEL -+-+-+-+-+-+-+-+-+-+-+- */
 
 /**
  * @brief A first try for a function to Create a model object (not complete, I'm not so sure I want it to be a pointer)
@@ -178,17 +130,7 @@ Model* create_model(const char* name, Layer* model_layers, double*** model_weigh
     return model;
 }
 
-
-/**
- * @brief A simple struct to incapsulate the prompt array and the lenght of the array
- * 
- * @param data(double*): The array of tokens
- * @param lenght(size_t): The positive integer number, how many elements are in the prompt array
- */
-typedef struct Prompt{
-    double* data;   // Pointer to the array of input values
-    size_t length;  // Number of input values
-} Prompt;
+/* -+-+-+-+-+-+-+-+-+-+-+- PROMPT -+-+-+-+-+-+-+-+-+-+-+- */
 
 /**
  * @brief Create a prompt object with an allocated array of the given length.
@@ -207,27 +149,7 @@ Prompt create_prompt(size_t length, double* tokens) {
     return prompt;
 }
 
-/**
- * @brief A simple struct to incapsulate the output array and the lenght of the array
- * 
- * @param is_valid(int): ( != 1 non valid; else then is valid) indicates if the output is valid or if something went wrong in its creation
- * @param used_model(Model*): The model used to calculate the output
- * @param data(double*): array of output tokens @attention: the data value is just a pointer to the last layer_outputs array, NOT A COPY
- * @param lenght(size_t): The positive integer number, how many elements are in the prompt array
- * @param layer_inputs(double**): a pointer to an array of pointers to arrays (basically matrix) containing the outputs generated by each layer
- * @param layer_outputs(double**): @todo
- * @deprecated (the following was a previous implementation that could theoretically reduce cache misses) The dimension of the array layer_inputs_and_outputs[i] are: i < used_model->number_of_layers_in_the_model * 2 ; i follows the logic of having first the input vector to the layer and then the output vector (input-output stored one after the other) so the dimension of the input/output of the layer [i] is used_model->model_layers.rows_of_adj_matrix
- */
-typedef struct Output{
-    char is_valid;
-    Model* used_model;
-    size_t length;  // size of the last output array
-    double* data;
-    /** @note To self: layer_inputs[i][j] -> i is the layer you want to take the input from; j is the specific input given to the j node */
-    double** layer_inputs;
-    double** layer_outputs;
-} Output;
-
+/* -+-+-+-+-+-+-+-+-+-+-+- OUTPUT -+-+-+-+-+-+-+-+-+-+-+- */
 
 /**
  * @brief A function that creates an empty output object (used for good practice/security purpose in returns of functions)
@@ -244,7 +166,10 @@ Output empty_output(){
     return(empty_output);
 }
 
+/* -+-+-+-+-+-+-+-+-+-+-+- NEURAL NETWORK OUTPUT -+-+-+-+-+-+-+-+-+-+-+- */
+
 Output calculate_output(Prompt* prompt, Model* model){
+    //                                  INPUT HEALTH CHECKS
     #if DEBUG
     fprintf(stderr, "\nStarted checks in %s function with\nprompt: %p\nmodel: %p\n", __func__, prompt, model);
     #endif
@@ -271,7 +196,9 @@ Output calculate_output(Prompt* prompt, Model* model){
     #if DEBUG
     fprintf(stderr, "Successfully exited checks in %s function with\nprompt: %p\nmodel: %p\n", __func__, prompt, model);
     #endif
+    //                                  END INPUT HEALTH CHECKS
 
+    //                          INITIALIZATION OF RETURNED OUTPUT STRUCT
     Output output;
     output.is_valid = 1;
     output.used_model = model;
@@ -292,6 +219,7 @@ Output calculate_output(Prompt* prompt, Model* model){
         fprintf(stderr, "Error in %s: memory allocation error. 'output.layer_inputs_and_outputs' is NULL.\n", __func__);
         return empty_output();
     }
+    //                          END INITIALIZATION OF RETURNED OUTPUT STRUCT
 
     /** We copy the prompt into the layer_inputs_and_outputs first array in order for it to be registered for 
      * training purposes while also maintaining the main loop as straightforward as possible */
@@ -315,9 +243,10 @@ Output calculate_output(Prompt* prompt, Model* model){
         }
     #endif
 
+    //                                      MAIN CALCULATION LOOP
     DEBUG_PRINT("Entering main loop... Stop value of i will be %zu\n", model->number_of_layers_in_the_model - 1);
-    // MAIN LOOP
-    for (size_t i = 0; i < model->number_of_layers_in_the_model - 1; i++){         DEBUG_PRINT("\nLoop at index [%zu]:\n", i); 
+    for (size_t i = 0; i < model->number_of_layers_in_the_model - 1; i++){
+        DEBUG_PRINT("\nLoop at index [%zu]:\n", i); 
         /** 1) pass the input trough each node */
         output.layer_outputs[i] = malloc(model->model_layers[i].rows_of_adj_matrix * sizeof(double));
         if (output.layer_outputs[i] == NULL){
@@ -355,6 +284,8 @@ Output calculate_output(Prompt* prompt, Model* model){
         }
 
     }
+    //                                      END MAIN CALCULATION LOOP
+
     /** 5) Handling last layer (output layer) */
     size_t const k = model->number_of_layers_in_the_model - 1; // enhancing readability
     output.length = model->model_layers[k].rows_of_adj_matrix; // is this varible really useful? It can be obtained from model->model_layers[k].rows_of_adj_matrix where k = model->number_of_layers_in_the_model - 1
@@ -375,154 +306,4 @@ Output calculate_output(Prompt* prompt, Model* model){
     return(output);
 }
 
-void test_calculate_output(void) 
-{
-    printf("Starting test_calculate_output()\n");
-
-    // 1) Create a small Model with two layers:
-    //    - First layer: 2 nodes (input layer)
-    //    - Second layer: 1 node (output layer)
-    Model testModel;
-    testModel.model_name = "TestModel";
-    testModel.number_of_layers_in_the_model = 2;
-    printf("Model '%s' with %zu layers\n", testModel.model_name, testModel.number_of_layers_in_the_model);
-
-    // Allocate the layer array
-    printf("Allocating model_layers...\n");
-    testModel.model_layers = malloc(testModel.number_of_layers_in_the_model * sizeof(Layer));
-    if (!testModel.model_layers) {
-        fprintf(stderr, "Failed to allocate model_layers\n");
-        return;
-    }
-    printf("model_layers allocated successfully\n");
-
-    // Create first layer: 2 nodes, with a 2x2 adjacency matrix
-    printf("Creating first layer (index 0)...\n");
-    testModel.model_layers[0] = create_layer(
-                                    /* num_nodes */ 2,
-                                    /* rows_of_adj_matrix */ 2,
-                                    /* columns_of_adj_matrix */ 2,
-                                    mySigmoid,
-                                    myThresholdFunc);
-    printf("First layer created\n");
-
-    // Create second layer: 1 node, expecting 2 inputs (so 2x1 matrix)
-    printf("Creating second layer (index 1)...\n");
-    testModel.model_layers[1] = create_layer(
-                                    /* num_nodes */ 1,
-                                    /* rows_of_adj_matrix */ 2,
-                                    /* columns_of_adj_matrix */ 1,
-                                    mySigmoid,
-                                    NULL);
-    printf("Second layer created\n");
-
-    // 2) Allocate weight matrices.
-    // We allocate an array with as many elements as there are layers.
-    // Convention: For layer 0 (input) we don't need weights, so set to NULL.
-    printf("Allocating model_weights array...\n");
-    testModel.model_weights = malloc(testModel.number_of_layers_in_the_model * sizeof(double**));
-    if (!testModel.model_weights) {
-        fprintf(stderr, "Failed to allocate model_weights\n");
-        free(testModel.model_layers);
-        return;
-    }
-    printf("model_weights array allocated successfully\n");
-
-    // For layer 0, no weight matrix is needed.
-    testModel.model_weights[0] = NULL;
-    printf("model_weights[0] set to %p\n", testModel.model_weights[0]);
-
-    // For layer 1, allocate a [2 x 1] matrix (2 rows, 1 column)
-    // IMPORTANT: Allocate at index 1, not index 0.
-    printf("Allocating weight matrix for second layer (model_weights[1])...\n");
-    testModel.model_weights[1] = malloc(2 * sizeof(double*));
-    if (!testModel.model_weights[1]) {
-        fprintf(stderr, "Failed to allocate weight matrix for layer 1\n");
-        free(testModel.model_layers);
-        free(testModel.model_weights);
-        return;
-    }
-    for (size_t r = 0; r < 2; r++) {
-        testModel.model_weights[1][r] = malloc(1 * sizeof(double));
-        if (!testModel.model_weights[1][r]) {
-            fprintf(stderr, "Failed to allocate weight matrix row %zu for layer 1\n", r);
-            for (size_t j = 0; j < r; j++) {
-                free(testModel.model_weights[1][j]);
-            }
-            free(testModel.model_weights[1]);
-            free(testModel.model_layers);
-            free(testModel.model_weights);
-            return;
-        }
-    }
-    printf("Weight matrix for layer 1 allocated successfully\n");
-
-    // Set weight matrix values:
-    // Weight matrix W = [ [0.5],
-    //                     [0.8] ]
-    printf("Setting weight values...\n");
-    testModel.model_weights[1][0][0] = 0.5;
-    testModel.model_weights[1][1][0] = 0.8;
-    printf("Weights set: W[0][0]=0.5, W[1][0]=0.8\n");
-
-    // Set bias for the single node in layer 1
-    printf("Setting bias for layer 1 node...\n");
-    testModel.model_layers[1].layer_array_of_nodes[0].bias = 0.1;
-    printf("Bias for layer 1 node set to 0.1\n");
-
-    // 3) Create a Prompt with 2 inputs
-    printf("Allocating prompt with 2 inputs...\n");
-    Prompt p;
-    p.length = 2;
-    p.data = malloc(2 * sizeof(double));
-    if (!p.data) {
-        fprintf(stderr, "Failed to allocate prompt data\n");
-        // Cleanup allocated memory before returning
-        for (size_t r = 0; r < 2; r++) {
-            free(testModel.model_weights[1][r]);
-        }
-        free(testModel.model_weights[1]);
-        free(testModel.model_weights);
-        free(testModel.model_layers);
-        return;
-    }
-    p.data[0] = 0.2; // Input #1
-    p.data[1] = 0.3; // Input #2
-    printf("Prompt data set: [0.2, 0.3]\n");
-
-    // 4) Calculate output
-    printf("Calling calculate_output()...\n");
-    Output result = calculate_output(&p, &testModel);
-    printf("Output calculated\n");
-
-    // 5) Print results
-    printf("calculate_output => length: %zu, [", result.length);
-    for (size_t i = 0; i < result.length; i++) {
-        printf("%f", result.data[i]);
-        if (i < result.length - 1)
-            printf(", ");
-    }
-    printf("]\n");
-
-    // Cleanup:
-    printf("Cleaning up allocated memory...\n");
-    free(p.data);
-    free(result.data);
-
-    // Free layer node arrays
-    free(testModel.model_layers[0].layer_array_of_nodes);
-    free(testModel.model_layers[1].layer_array_of_nodes);
-
-    // Free weight matrices for layer 1 (2 rows)
-    for (size_t r = 0; r < 2; r++) {
-        free(testModel.model_weights[1][r]);
-    }
-    free(testModel.model_weights[1]);
-    free(testModel.model_weights);
-
-    // Free the layers array
-    free(testModel.model_layers);
-
-    printf("test_calculate_output() finished successfully.\n");
-}
 
