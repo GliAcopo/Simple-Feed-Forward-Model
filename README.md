@@ -1,5 +1,8 @@
 # Graph-Based Feed-Forward Neural Network Library in C
 
+# Work In Progress
+This project is still a work in progress, many things will be subject to change in the near future.
+
 ## Overview
 
 This repository hosts a library for constructing, training, evaluating, and managing feed-forward neural network models, all implemented in C. This project leverages graph theory and adjacency matrices to represent the network's structure, providing a more "theoretical" perspective on neural network design.
