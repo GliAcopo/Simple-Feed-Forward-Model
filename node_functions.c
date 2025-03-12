@@ -43,6 +43,24 @@ Node create_node(int index, double bias, activation_function activation_function
     return n;
 }
 
+
+ErrorCode free_Node(Node* node)
+{
+    // Check for NULL first
+    if (!node) {
+        fprintf(stderr,
+                "Error in %s: argument passed as NULL pointer. 'node = %p'.\n",
+                __func__, (void*)node);
+        return ERROR_NULL_POINTER_AS_PARAMETER;
+    }
+    
+    // If node is not NULL, free it
+    free(node);
+    
+    // Return success (or whatever is appropriate for your function)
+    return NO_ERROR;
+}
+
 /*USE CASE:
 double mySigmoid(double x) {
     return 1.0 / (1.0 + exp(-x));
@@ -67,8 +85,9 @@ Layer create_layer(size_t num_nodes,
     // Allocate space for the nodes
     layer.layer_array_of_nodes = malloc(num_nodes * sizeof(Node));
     if (layer.layer_array_of_nodes == NULL) {
-        fprintf(stderr, "Failed to allocate layer_array_of_nodes\n");
-        // For a real project, handle errors more gracefully
+        fprintf(stderr,
+            "Error in %s: Failed to allocate layer_array_of_nodes. 'layer.layer_array_of_nodes = %p'.\n",
+            __func__, (void*)layer.layer_array_of_nodes);
         Layer empty = {0};
         return empty;
     }

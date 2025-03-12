@@ -3,6 +3,13 @@
 
 #include <stddef.h> // for size_t
 
+typedef enum ErrorCode{
+    NO_ERROR = 0,
+    ERROR_NULL_POINTER_AS_PARAMETER = -1,
+    ERROR_MALLOC_OUT_OF_MEMORY = -2,
+    
+} ErrorCode;
+
 
 /*          -+-+-+-+-+-+-+-+-+-+-+- THRESHOLD AND ACTIVATION FUNCTIONS -+-+-+-+-+-+-+-+-+-+-+- */
 
