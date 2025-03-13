@@ -24,7 +24,7 @@ double myThresholdFunc(double x) {
 /* -+-+-+-+-+-+-+-+-+-+-+- NODE -+-+-+-+-+-+-+-+-+-+-+- */
 
 /**
- * @brief Create a node object
+ * @brief Create a node object 
  * 
  * @param index 
  * @param bias 
@@ -57,7 +57,7 @@ ErrorCode free_Node(Node* node)
     // If node is not NULL, free it
     free(node);
     
-    // Return success (or whatever is appropriate for your function)
+    // Return success
     return NO_ERROR;
 }
 
@@ -72,18 +72,26 @@ n.activation = mySigmoid; ???
 */
 
 /* -+-+-+-+-+-+-+-+-+-+-+- LAYER -+-+-+-+-+-+-+-+-+-+-+- */
-
-Layer create_layer(size_t num_nodes,
-                   size_t rows_of_adj_matrix,
-                   size_t columns_of_adj_matrix,
+/**
+ * @brief Create a layer object
+ *
+ * @param num_nodes The number of nodes that will be in the layer
+ * @param number_of_nodes_in_the_layer 
+ * @param number_of_nodes_in_the_next_layer 
+ * @param activation The activation function that will be used in the nodes of the returned layer
+ * @param threshold The threshold function that will be used in the nodes of the returned layer
+ * @return Layer struct
+ */
+Layer create_layer(size_t number_of_nodes_in_the_layer,
+                   // size_t number_of_nodes_in_the_next_layer,
                    activation_function activation,
                    threshold_function threshold){
     Layer layer;
-    layer.rows_of_adj_matrix = rows_of_adj_matrix;
-    layer.columns_of_adj_matrix = columns_of_adj_matrix;
+    layer.number_of_nodes_in_the_layer = number_of_nodes_in_the_layer;
+    // layer.number_of_nodes_in_the_next_layer = number_of_nodes_in_the_next_layer;
 
     // Allocate space for the nodes
-    layer.layer_array_of_nodes = malloc(num_nodes * sizeof(Node));
+    layer.layer_array_of_nodes = malloc(number_of_nodes_in_the_layer * sizeof(Node));
     if (layer.layer_array_of_nodes == NULL) {
         fprintf(stderr,
             "Error in %s: Failed to allocate layer_array_of_nodes. 'layer.layer_array_of_nodes = %p'.\n",
@@ -93,7 +101,7 @@ Layer create_layer(size_t num_nodes,
     }
 
     // Initialize each node
-    for (size_t i = 0; i < num_nodes; i++) {
+    for (size_t i = 0; i < number_of_nodes_in_the_layer; i++) {
         // Example: bias=0.0 for all nodes
         layer.layer_array_of_nodes[i] = create_node(
             (int)i,            /* index */
@@ -127,6 +135,7 @@ Layer init_layer(int layer_number, Node * array_of_nodes_present_in_the_layer, d
  * @param model_weights: The array of matrices containing the weights of the model.
  * @return Model* 
  */
+// PROBLEM IN FUNCTIONS (Layer* model_layers), MAKES NO SENSE AS A VARIABLE.
 Model* create_model(const char* name, Layer* model_layers, double*** model_weights) {
     Model* model = malloc(sizeof(Model));
     if (!model) {
@@ -137,6 +146,45 @@ Model* create_model(const char* name, Layer* model_layers, double*** model_weigh
     model->number_of_layers_in_the_model = 0;
     model->model_layers = model_layers;
     model->model_weights = model_weights;
+    // Allocate space for the name and copy it
+    model->model_name = malloc(strlen(name) + 1);
+    if (!model->model_name) {
+        fprintf(stderr, "Allocation error\n");
+        free(model);  // Clean up partially allocated model
+        return NULL;
+    }
+    strcpy(model->model_name, name);
+
+    return model;
+}
+
+/**
+ * @brief A function that merges the create model function and the create_layer function for a fast initialization of the model
+ * 
+ * @param name(const char*): The name of the model, passed as a dynamically allocated array of chars.abort
+ * @param model_layer(Layer*): The pointer to the array of layers.
+ * @param model_weights: The array of matrices containing the weights of the model.
+ * @return Model* 
+ */
+Model* init_model(const char* name, size_t number_of_layers_in_the_model, double*** model_weights,
+                    size_t number_of_nodes_in_the_layer,
+                    activation_function activation,
+                    threshold_function threshold) {
+    Model* model = malloc(sizeof(Model));
+    if (!model) {
+        fprintf(stderr, "Allocation error\n");
+        return NULL;
+    }
+    // Initialize fields
+    model->number_of_layers_in_the_model = number_of_layers_in_the_model;
+    model->model_layers = calloc(number_of_layers_in_the_model, sizeof(Layer));
+    model->model_weights = model_weights;
+
+    // Create the layers and put them in the model
+    for (size_t i = 0; i < number_of_layers_in_the_model, i++){
+        model->model_layers[i] = create_layer(number_of_nodes_in_the_layer, activation, threshold);
+    }
+
     // Allocate space for the name and copy it
     model->model_name = malloc(strlen(name) + 1);
     if (!model->model_name) {
@@ -208,8 +256,8 @@ Output calculate_output(Prompt* prompt, Model* model){
         fprintf(stderr, "Error in %s: 'model_layers' is NULL.\n", __func__);
         return empty_output();
     }
-    if (prompt->length != model->model_layers[0].rows_of_adj_matrix){
-        fprintf(stderr, "Error in %s: prompt size (%zu) is different from the size of the first layer of model (%zu).\n", __func__, prompt->length, model->model_layers[0].rows_of_adj_matrix);
+    if (prompt->length != model->model_layers[0].number_of_nodes_in_the_layer){
+        fprintf(stderr, "Error in %s: prompt size (%zu) is different from the size of the first layer of model (%zu).\n", __func__, prompt->length, model->model_layers[0].number_of_nodes_in_the_layer);
         return empty_output();
     }
     #if DEBUG
@@ -267,12 +315,12 @@ Output calculate_output(Prompt* prompt, Model* model){
     for (size_t i = 0; i < model->number_of_layers_in_the_model - 1; i++){
         DEBUG_PRINT("\nLoop at index [%zu]:\n", i); 
         /** 1) pass the input trough each node */
-        output.layer_outputs[i] = malloc(model->model_layers[i].rows_of_adj_matrix * sizeof(double));
+        output.layer_outputs[i] = malloc(model->model_layers[i].number_of_nodes_in_the_layer * sizeof(double));
         if (output.layer_outputs[i] == NULL){
             fprintf(stderr, "Error in %s: memory allocation error. 'output.layer_outputs[%zu]' is NULL.\n", __func__, i);
             return empty_output();
         }
-        for (size_t j; j < model->model_layers[i].rows_of_adj_matrix; j++){
+        for (size_t j; j < model->model_layers[i].number_of_nodes_in_the_layer; j++){
             /** 2) register output of each node into the output array */
             double input_to_node = output.layer_inputs[i][j] + model->model_layers[i].layer_array_of_nodes[j].bias; // variable to enhance code readability (input + bias)
             output.layer_outputs[i][j] = model->model_layers[i].layer_array_of_nodes[j].activation(input_to_node);
@@ -285,15 +333,15 @@ Output calculate_output(Prompt* prompt, Model* model){
          *  Row vector V[1][n] * M[n][m] is the operation to do.
          * **/
         // Allocate memory for the next layer's input vector.
-        // model->model_layers[i+1].rows_of_adj_matrix represents the number of nodes (m) in the next layer.
-        output.layer_inputs[i+1] = malloc(model->model_layers[i+1].rows_of_adj_matrix * sizeof(double));
+        // model->model_layers[i+1].number_of_nodes_in_the_layer represents the number of nodes (m) in the next layer.
+        output.layer_inputs[i+1] = malloc(model->model_layers[i+1].number_of_nodes_in_the_layer * sizeof(double));
 
         // Iterate over each node in the next layer (each column of the weight matrix)
-        for (size_t column = 0; column < model->model_layers[i+1].rows_of_adj_matrix; column++) {
+        for (size_t column = 0; column < model->model_layers[i+1].number_of_nodes_in_the_layer; column++) {
             double sum = 0.0;
 
             // For each node in the current layer (each row of the weight matrix)
-            for (size_t row = 0; row < model->model_layers[i].rows_of_adj_matrix; row++) {
+            for (size_t row = 0; row < model->model_layers[i].number_of_nodes_in_the_layer; row++) {
                 // Multiply the output from the current layer's node (row index)
                 // by the weight connecting that node to the next layer's node (column index)
                 sum += output.layer_outputs[i][row] * model->model_weights[i][row][column];
@@ -307,15 +355,15 @@ Output calculate_output(Prompt* prompt, Model* model){
 
     /** 5) Handling last layer (output layer) */
     size_t const k = model->number_of_layers_in_the_model - 1; // enhancing readability
-    output.length = model->model_layers[k].rows_of_adj_matrix; // is this varible really useful? It can be obtained from model->model_layers[k].rows_of_adj_matrix where k = model->number_of_layers_in_the_model - 1
+    output.length = model->model_layers[k].number_of_nodes_in_the_layer; // is this varible really useful? It can be obtained from model->model_layers[k].number_of_nodes_in_the_layer where k = model->number_of_layers_in_the_model - 1
     /** 5.1) pass the input trough each node */
-    output.layer_outputs[k] = malloc(model->model_layers[k].rows_of_adj_matrix * sizeof(double));
+    output.layer_outputs[k] = malloc(model->model_layers[k].number_of_nodes_in_the_layer * sizeof(double));
     if (output.layer_outputs[k] == NULL)
     {
         fprintf(stderr, "Error in %s: memory allocation error. 'output.layer_outputs[%zu]' (last layer) is NULL.\n", __func__, k);
         return empty_output();
     }
-    for (size_t j; j < model->model_layers[k].rows_of_adj_matrix; j++)
+    for (size_t j; j < model->model_layers[k].number_of_nodes_in_the_layer; j++)
     {
         /** 5.2) register output of each node into the output array */
         double input_to_node = output.layer_inputs[k][j] + model->model_layers[k].layer_array_of_nodes[j].bias;

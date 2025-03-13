@@ -10,7 +10,7 @@
             :notif! for this program I'm gonna use the SIGMOID function, wich output is between [1, 0]
 */
 /*
-PENSO DI AVER TROVATO L'ESERCIZIO GIUSTO! Farò un modello di intelligenza artificiale per il calcolo delle radici quadrate approssimate per eccesso o per difetto!!! 
+Farò un modello di intelligenza artificiale per il calcolo delle radici quadrate approssimate per eccesso o per difetto.
     :param: input - il valore in input alla rete neurale sarà un intero a 4 bit, quindi nel range [0, 8]
     :param: output - Il valore in output sarà un (int)char da 4 bit che rappresenterà il numero calcolato. 
     :param: learning - ogni volta che il modello produrrà un output, chiederà all'utente se:
