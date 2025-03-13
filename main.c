@@ -77,7 +77,7 @@ void test_calculate_output(void){
 }
 
 int main(){
-
+    test_init_model();
     //test1();
 
     /*
