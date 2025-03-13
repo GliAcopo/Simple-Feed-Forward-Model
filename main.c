@@ -208,7 +208,7 @@ void test_calculate_output(void){
         1 input, 1 secret, 1 output.
         Every layer will be composed of 4 nodes
         To do so we'll only use the given creation functions */
-        Layer input = create_layer(4, 4, 4);
+        
 }
 
 int main(){
