@@ -34,10 +34,12 @@ double** create_adj_matrix_double_square(int layers, int nodes_per_layer){
  * Since this is a fully connected FeedForward neural network we will represent the edges as follows: 0 = no connection, positive = edge from left to right (going forward); negative = edge from right to left (backwards)
  * @return matrices_vector (double***). This is a vector, each element of this vector contains the matrices of the weights for each layer of dimension (nodes_per_layer x nodes_per_layer), (yes, this neural network is a square).
  */
-double*** create_FF_model_matrices(int layers, int nodes_per_layer){
-    double*** matrices_vector = (double ***)malloc(layers * sizeof(double**));                         // Creating the vector to store the matrices
+double*** create_FF_model_matrices(size_t layers, size_t nodes_per_layer){
+    // 1) Creating the vector to store the matrices
+    // @note: we create (layers - 1) and not (layers) matrices because adj matrices are only present between two layers, so the input layer and the output layer do not need an adjacency matrix themselves. EX: let's imagine a model: [input]{matrix}[secret]{matrix}[output] => 3 layers but two matrices! 
+    double*** matrices_vector = (double ***)malloc((layers - 1) * sizeof(double**));
 
-    for (int i = 0; i < layers; i++){
+    for (size_t i = 0; i < layers; i++){
         double** matrix = create_matrix_double(nodes_per_layer, nodes_per_layer);                     // creating the matrix of nodes x nodes
         matrix = init_matrix_to_double_value(matrix, nodes_per_layer, nodes_per_layer, (double)1);    // initiating the matrix to value 1 to symbolise the connections
 
@@ -55,7 +57,7 @@ double*** create_FF_model_matrices(int layers, int nodes_per_layer){
         //}
 
         matrices_vector[i] = matrix;
-        // free_double_matrix(matrix, nodes_per_layer); THIS DOESN'T WORK: memory getting freed is memory containing the matrices
+        // free_double_matrix(matrix, nodes_per_layer); THIS DOESN'T WORK: memory getting freed is memory containing the matrices, this line should not be uncommented
     }
     return(matrices_vector);
 }

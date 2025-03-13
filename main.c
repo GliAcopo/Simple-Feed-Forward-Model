@@ -52,8 +52,7 @@ void test1(){
 
 }
 
-void test_calculate_output_autogen(void) 
-{
+void test_calculate_output_autogen(void) {
     printf("Starting test_calculate_output()\n");
 
     // 1) Create a small Model with two layers:
@@ -203,18 +202,33 @@ void test_calculate_output_autogen(void)
     printf("test_calculate_output() finished successfully.\n");
 }
 
+void test_init_model(void){
+    const size_t number_of_layers = 3;
+    const size_t number_of_nodes_per_layer = 4;
+    const char   name[10] = "test model";
+    activation_function test_activation = mySigmoid;
+    threshold_function test_threshold = myThresholdFunc;
+
+    double*** test_weights = create_FF_model_matrices(number_of_layers, number_of_nodes_per_layer);
+    Model* test_model = init_model(&name, number_of_layers, test_weights, number_of_nodes_per_layer, test_activation, test_threshold);
+    if (!test_model){fprintf(stderr,
+        "Error in %s: init_model returned NULL pointer.\n",
+        __func__);
+        return;
+    }
+        
+}
+
 void test_calculate_output(void){
     /* To test the functionality of output generation let's create a 3 layer model 
         1 input, 1 secret, 1 output.
         Every layer will be composed of 4 nodes
         To do so we'll only use the given creation functions */
-        
 }
 
 int main(){
 
     //test1();
-    test_calculate_output();
 
     /*
     #define LIVELLI 4

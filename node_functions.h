@@ -76,9 +76,10 @@ typedef struct Layer
 }Layer;
 
 //                                          FUNCTION PROTOTYPES
-Layer create_layer(size_t num_nodes,
+Layer create_layer(
+    // size_t num_nodes,
     size_t number_of_nodes_in_the_layer,
-    size_t number_of_nodes_in_the_next_layer,
+    // size_t number_of_nodes_in_the_next_layer,
     activation_function activation,
     threshold_function threshold);
 //                                         END FUNCTION PROTOTYPES
@@ -107,6 +108,11 @@ typedef struct Model{
 Model* create_model(const char* name,
     Layer* model_layers,
     double*** model_weights);
+    
+Model* init_model(const char* name, size_t number_of_layers_in_the_model, double*** model_weights,
+    size_t number_of_nodes_in_the_layer,
+    activation_function activation,
+    threshold_function threshold);
 //                                         END FUNCTION PROTOTYPES
 
 /*                      -+-+-+-+-+-+-+-+-+-+-+- END STRUCT MODEL -+-+-+-+-+-+-+-+-+-+-+- */
