@@ -66,7 +66,10 @@ void test_init_model(void){
         __func__);
         return;
     }
-        
+    
+    fprintf(stderr,
+        "Exited function %s: without recognising any problems.\n",
+        __func__);
 }
 
 void test_calculate_output(void){
