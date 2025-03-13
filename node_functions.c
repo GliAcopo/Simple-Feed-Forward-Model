@@ -181,7 +181,7 @@ Model* init_model(const char* name, size_t number_of_layers_in_the_model, double
     model->model_weights = model_weights;
 
     // Create the layers and put them in the model
-    for (size_t i = 0; i < number_of_layers_in_the_model, i++){
+    for (size_t i = 0; i < number_of_layers_in_the_model; i++){
         model->model_layers[i] = create_layer(number_of_nodes_in_the_layer, activation, threshold);
     }
 
