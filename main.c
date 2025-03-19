@@ -66,6 +66,15 @@ void test_init_model(void){
         __func__);
         return;
     }
+
+    for (size_t i = 0; i < test_model->number_of_layers_in_the_model - 1; i++){
+        // We got to keep in mind that the model possesses (number of layers -1) matrices since the input and output layers do not possess any adj matrices 
+        // Easy enough the rows are just the number of nodes in the current layer
+        size_t rows = test_model->model_layers[i].number_of_nodes_in_the_layer;
+        // Also easy, the columns are just the number of nodes in the next layer (this is just a concequence of graph theory, just take a look at the example model graph)
+        size_t columns = test_model->model_layers[i+1].number_of_nodes_in_the_layer;
+        print_matrix_double(test_model->model_weights[i], rows, columns);
+    }
     
     fprintf(stderr,
         "Exited function %s: without recognising any problems.\n",

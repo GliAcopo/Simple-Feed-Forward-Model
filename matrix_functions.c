@@ -226,7 +226,7 @@ MatrixError change_value_matrix(double** matrix_pointer, int row, int column, do
             
     // This logic cheks if the value was actually changed correctly
     if (matrix_pointer[row][column] == value_to_change){
-        return RETURN_TRUE;                 // Since the value got actually changed, we return a success with Error = false
+        return RETURN_TRUE;                 // Since the value got actually changed, we return a success with (Error = false)
     } else {
         return MATRIX_ERROR_NULL_POINTER;   // returns -1 as a general error if the value wasn't actually changed
     }
