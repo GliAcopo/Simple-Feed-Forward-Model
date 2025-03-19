@@ -233,6 +233,19 @@ Output empty_output(){
     return(empty_output);
 }
 
+void print_output(Output* pointer_to_output){
+    if(!pointer_to_output){fprintf(stderr,"Error in %s function, NULL pointer received\n", __func__); return;}
+    if(pointer_to_output->data == NULL){fprintf(stderr,"Error in %s function, ponter to data is NULL (pointer_to_output->data == NULL)\n", __func__); return;}
+    if(pointer_to_output->length == 0){fprintf(stderr,"Possible Error in %s function, lenght of output is 0\n", __func__);}
+
+    printf("{");
+    for(size_t i = 0; i < pointer_to_output->length; i++){
+        printf(" [%zu]:(%d) ", pointer_to_output->data[i]);
+    }
+    printf("}\n");
+    return;
+}
+
 /* -+-+-+-+-+-+-+-+-+-+-+- NEURAL NETWORK OUTPUT -+-+-+-+-+-+-+-+-+-+-+- */
 
 Output calculate_output(Prompt* prompt, Model* model){

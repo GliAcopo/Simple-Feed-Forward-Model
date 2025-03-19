@@ -76,7 +76,31 @@ void test_init_model(void){
         size_t columns = test_model->model_layers[i+1].number_of_nodes_in_the_layer;
         print_matrix_double(test_model->model_weights[i], rows, columns);
     }
-    
+
+    fprintf(stderr,
+        "Exited function %s: without recognising any problems.\n",
+        __func__);
+}
+
+void test_inference_engine(){
+    const size_t number_of_layers = 3;
+    const size_t number_of_nodes_per_layer = 4;
+    const char   name[10] = "test model";
+    activation_function test_activation = mySigmoid;
+    threshold_function test_threshold = myThresholdFunc;
+
+    double*** test_weights = create_FF_model_matrices(number_of_layers, number_of_nodes_per_layer);
+    Model* test_model = init_model(&name, number_of_layers, test_weights, number_of_nodes_per_layer, test_activation, test_threshold);
+    if (!test_model){fprintf(stderr,
+        "Error in %s: init_model returned NULL pointer.\n",
+        __func__);
+        return;
+    }
+
+    Prompt test_prompt = ;
+    Output test_output = calculate_output(&test_prompt, &test_output);
+    print_output(&test_output);
+
     fprintf(stderr,
         "Exited function %s: without recognising any problems.\n",
         __func__);
