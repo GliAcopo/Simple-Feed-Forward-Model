@@ -68,6 +68,7 @@ void test_init_model(void){
     }
 
     for (size_t i = 0; i < test_model->number_of_layers_in_the_model - 1; i++){
+        printf("Weight Matrix %zu", i);
         // We got to keep in mind that the model possesses (number of layers -1) matrices since the input and output layers do not possess any adj matrices 
         // Easy enough the rows are just the number of nodes in the current layer
         size_t rows = test_model->model_layers[i].number_of_nodes_in_the_layer;
