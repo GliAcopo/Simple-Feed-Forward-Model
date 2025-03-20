@@ -216,6 +216,16 @@ Prompt create_prompt(size_t length, double* tokens) {
     return prompt;
 }
 
+Prompt init_prompt(size_t number_of_tokens){
+  Prompt initialized_prompt;
+  prompt.data = (double*)malloc(number_of_tokens * sizeof(double));
+    prompt.length = number_of_tokens;
+    for (size_t i = 0; i < number_of_tokens; i++) {
+        prompt.data[i] = (double)i;
+    }
+    return prompt;
+}
+
 /* -+-+-+-+-+-+-+-+-+-+-+- OUTPUT -+-+-+-+-+-+-+-+-+-+-+- */
 
 /**
