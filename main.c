@@ -99,7 +99,7 @@ void test_inference_engine(){
 
     Prompt test_prompt = init_prompt(4);
     for(size_t i = 0; i < number_of_nodes_per_layer; i++){
-        test_prompt.data[i] = (double)1;
+       test_prompt.data[i] = (double)5;
     }
     Output test_output = calculate_output(&test_prompt, test_model);
     printf("Output is\n");

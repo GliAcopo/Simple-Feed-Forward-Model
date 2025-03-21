@@ -322,7 +322,7 @@ Output calculate_output(Prompt* prompt, Model* model){
     for (size_t i = 0; i < prompt->length; i++){
         output.layer_inputs[0][i] = prompt->data[i];
     }
-    #if DEBUG ////////////////////////
+    #if DEBUG //// We print the input values from the prompt array and the input array to check if they were copied properly
         printf("Prompt was copied into first input array. Copied values:\nInput array:\n");
 	printf("1) Input array size: %zu\n", prompt->length);
 	printf("2) Input array coefficients: ");
@@ -374,6 +374,7 @@ Output calculate_output(Prompt* prompt, Model* model){
         output.layer_inputs[i+1] = malloc(model->model_layers[i+1].number_of_nodes_in_the_layer * sizeof(double));
 
         // Iterate over each node in the next layer (each column of the weight matrix)
+        DEBUG_PRINT("Computed output of the layer is: ["); // Debug print to show the computed values by the inference engine.
         for (size_t column = 0; column < model->model_layers[i+1].number_of_nodes_in_the_layer; column++) {
             double sum = 0.0;
 
@@ -385,8 +386,9 @@ Output calculate_output(Prompt* prompt, Model* model){
             }
             // Store the computed sum into the next layer's input vector at the index corresponding to the node (column)
             output.layer_inputs[i+1][column] = sum;
+            DEBUG_PRINT("%lf, ",output.layer_inputs[i+1][column]);
         }
-
+        DEBUG_PRINT("]\n");
     }
     //                                      END MAIN CALCULATION LOOP
 
