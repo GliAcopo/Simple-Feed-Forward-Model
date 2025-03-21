@@ -8,12 +8,12 @@
 
 /* -+-+-+-+-+-+-+-+-+-+-+- THRESHOLD AND ACTIVATION FUNCTIONS -+-+-+-+-+-+-+-+-+-+-+- */
 
-/*  Since every node needs an activation function ad a threshold funtion I'll use a pointer to function in every node to point to said functions.*/
-typedef double (*activation_function)(double x);
-typedef double (*threshold_function)(double x);
-
 double mySigmoid(double x) {
     return 1.0 / (1.0 + exp(-x));
+}
+
+double myLinear(double x){
+    return (x);
 }
 
 // Just a dummy example threshold
@@ -218,12 +218,12 @@ Prompt create_prompt(size_t length, double* tokens) {
 
 Prompt init_prompt(size_t number_of_tokens){
   Prompt initialized_prompt;
-  prompt.data = (double*)malloc(number_of_tokens * sizeof(double));
-    prompt.length = number_of_tokens;
+  initialized_prompt.data = (double*)malloc(number_of_tokens * sizeof(double));
+    initialized_prompt.length = number_of_tokens;
     for (size_t i = 0; i < number_of_tokens; i++) {
-        prompt.data[i] = (double)i;
+        initialized_prompt.data[i] = (double)i;
     }
-    return prompt;
+    return initialized_prompt;
 }
 
 /* -+-+-+-+-+-+-+-+-+-+-+- OUTPUT -+-+-+-+-+-+-+-+-+-+-+- */
@@ -250,7 +250,7 @@ void print_output(Output* pointer_to_output){
 
     printf("{");
     for(size_t i = 0; i < pointer_to_output->length; i++){
-        printf(" [%zu]:(%d) ", pointer_to_output->data[i]);
+        printf(" [%zu]:(%f) ", i, pointer_to_output->data[i]);
     }
     printf("}\n");
     return;
@@ -323,14 +323,28 @@ Output calculate_output(Prompt* prompt, Model* model){
         output.layer_inputs[0][i] = prompt->data[i];
     }
     #if DEBUG ////////////////////////
-        printf("Prompt was copied into first input array. Copied values:\nInput array:\n 1) ");
+        printf("Prompt was copied into first input array. Copied values:\nInput array:\n");
+	printf("1) Input array size: %zu\n", prompt->length);
+	printf("2) Input array coefficients: ");
         for (size_t i = 0; i < prompt->length; i++){
-            printf("%lf, ", output.layer_inputs[0][i]);
+            printf("[%zu]:(%lf), ", i, output.layer_inputs[0][i]);
         }
-            printf("\nPrompt array:\n2) ");
-        for (size_t i = 0; i < prompt->length; i++){
-            printf("%lf, ", prompt->data[i]);
-        }
+            printf("\nPrompt array:\n");
+	    printf("1) Prompt array size (copied size): %zu\n", prompt->length);
+	    printf("2) Prompt array coefficients: ");
+	if (prompt->data == NULL)
+	    {
+	      fprintf(stderr, "Error in [%s:%s:%d]: Prompt->data is null!\n", __FILE__, __func__, __LINE__);
+	      return(empty_output());
+	    }
+	else{
+	  printf("(\nprompt->data was confirmed not to be a not a NULL pointer)\n");
+          for (size_t i = 0; i < prompt->length; i++){ // Theoretically the two have the same lenght
+              printf("[%zu]:", i);
+	      printf("(%lf), ", prompt->data[i]);
+          }
+	  printf("\n");
+	}
     #endif
 
     //                                      MAIN CALCULATION LOOP

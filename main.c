@@ -85,8 +85,8 @@ void test_init_model(void){
 void test_inference_engine(){
     const size_t number_of_layers = 3;
     const size_t number_of_nodes_per_layer = 4;
-    const char   name[10] = "test model";
-    activation_function test_activation = mySigmoid;
+    const char   name[11] = "test model\0";
+    activation_function test_activation = myLinear;
     threshold_function test_threshold = myThresholdFunc;
 
     double*** test_weights = create_FF_model_matrices(number_of_layers, number_of_nodes_per_layer);
@@ -97,13 +97,17 @@ void test_inference_engine(){
         return;
     }
 
-    Prompt test_prompt = ;
-    Output test_output = calculate_output(&test_prompt, &test_output);
+    Prompt test_prompt = init_prompt(4);
+    for(size_t i = 0; i < number_of_nodes_per_layer; i++){
+        test_prompt.data[i] = (double)1;
+    }
+    Output test_output = calculate_output(&test_prompt, test_model);
+    printf("Output is\n");
     print_output(&test_output);
 
     fprintf(stderr,
-        "Exited function %s: without recognising any problems.\n",
-        __func__);
+        "Exited function %s from %s file at %s: without recognising any problems.\n",
+        __func__, __FILE__, __TIME__);
 }
 
 void test_calculate_output(void){
@@ -115,6 +119,7 @@ void test_calculate_output(void){
 
 int main(){
     test_init_model();
+    test_inference_engine();
     //test1();
 
     /*

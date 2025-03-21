@@ -12,13 +12,14 @@ typedef enum ErrorCode{
 
 
 /*          -+-+-+-+-+-+-+-+-+-+-+- THRESHOLD AND ACTIVATION FUNCTIONS -+-+-+-+-+-+-+-+-+-+-+- */
-
+/*  Since every node needs an activation function ad a threshold funtion I'll use a pointer to function in every node to point to said functions.*/
 typedef double (*activation_function)(double x);
 typedef double (*threshold_function)(double x);
 
 //                                          FUNCTION PROTOTYPES
 double mySigmoid(double x);
 double myThresholdFunc(double x);
+double myLinear(double x);
 //                                         END FUNCTION PROTOTYPES
 
 /*          -+-+-+-+-+-+-+-+-+-+-+- END THRESHOLD AND ACTIVATION FUNCTIONS -+-+-+-+-+-+-+-+-+-+-+- */
@@ -133,6 +134,7 @@ typedef struct Prompt{
 
 //                                          FUNCTION PROTOTYPES
 Prompt create_prompt(size_t length, double* tokens);
+Prompt init_prompt(size_t number_of_tokens);
 //                                         END FUNCTION PROTOTYPES
 
 /*                     -+-+-+-+-+-+-+-+-+-+-+- END STRUCT PROMPT -+-+-+-+-+-+-+-+-+-+-+- */
