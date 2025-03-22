@@ -338,7 +338,7 @@ Output calculate_output(Prompt* prompt, Model* model){
 	      return(empty_output());
 	    }
 	else{
-	  printf("(\nprompt->data was confirmed not to be a not a NULL pointer)\n");
+	  printf("\n(prompt->data was confirmed not to be a not a NULL pointer)\n");
           for (size_t i = 0; i < prompt->length; i++){ // Theoretically the two have the same lenght
               printf("[%zu]:", i);
 	      printf("(%lf), ", prompt->data[i]);
