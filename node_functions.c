@@ -394,7 +394,7 @@ Output calculate_output(Prompt* prompt, Model* model){
     //                                      END MAIN CALCULATION LOOP
 
     /** 5) Handling last layer (output layer) */
-    size_t const k = model->number_of_layers_in_the_model - 1; // enhancing readability
+    size_t const k = model->number_of_layers_in_the_model - 1; // variable created to enhance readability
     output.length = model->model_layers[k].number_of_nodes_in_the_layer; // is this varible really useful? It can be obtained from model->model_layers[k].number_of_nodes_in_the_layer where k = model->number_of_layers_in_the_model - 1
     /** 5.1) pass the input trough each node */
     output.layer_outputs[k] = malloc(model->model_layers[k].number_of_nodes_in_the_layer * sizeof(double));
@@ -403,11 +403,12 @@ Output calculate_output(Prompt* prompt, Model* model){
         fprintf(stderr, "Error in %s: memory allocation error. 'output.layer_outputs[%zu]' (last layer) is NULL.\n", __func__, k);
         return empty_output();
     }
-    for (size_t j; j < model->model_layers[k].number_of_nodes_in_the_layer; j++)
+    for (size_t j = 0; j < model->model_layers[k].number_of_nodes_in_the_layer; j++)
     {
         /** 5.2) register output of each node into the output array */
         double input_to_node = output.layer_inputs[k][j] + model->model_layers[k].layer_array_of_nodes[j].bias;
         output.layer_outputs[k][j] = model->model_layers[k].layer_array_of_nodes[j].activation(input_to_node);
+        DEBUG_PRINT("Passed values trough each node input_to_node[%zu] = %lf -> %lf (= output.layer_outputs[%zu][%zu])", j, input_to_node, output.layer_outputs[k][j], k, j);  
     }
     output.data = output.layer_outputs[k];
     return(output);
