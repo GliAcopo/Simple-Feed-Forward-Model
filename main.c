@@ -60,7 +60,7 @@ void test_init_model(void){
     threshold_function test_threshold = myThresholdFunc;
 
     double*** test_weights = create_FF_model_matrices(number_of_layers, number_of_nodes_per_layer);
-    Model* test_model = init_model(&name, number_of_layers, test_weights, number_of_nodes_per_layer, test_activation, test_threshold);
+    Model* test_model = init_model(name, number_of_layers, test_weights, number_of_nodes_per_layer, test_activation, test_threshold);
     if (!test_model){fprintf(stderr,
         "Error in %s: init_model returned NULL pointer.\n",
         __func__);
@@ -89,6 +89,7 @@ void test_inference_engine(){
     /* Or you could also use a dinamically allocated array
     char* name = malloc(strlen("test model") + 1);
     if(name == NULL){fprintf(stderr, "Error in [%s:%s:%d]: failed to allocate memory for the name!\n", __FILE__, __func__, __LINE__);}
+    strcpy(name, "test model");
     */
     activation_function test_activation = myLinear;
     threshold_function test_threshold = myThresholdFunc;
@@ -99,6 +100,16 @@ void test_inference_engine(){
         "Error in %s: init_model returned NULL pointer.\n",
         __func__);
         return;
+    }
+
+    for (size_t i = 0; i < test_model->number_of_layers_in_the_model - 1; i++){
+        printf("Weight Matrix %zu", i);
+        // We got to keep in mind that the model possesses (number of layers -1) matrices since the input and output layers do not possess any adj matrices 
+        // Easy enough the rows are just the number of nodes in the current layer
+        size_t rows = test_model->model_layers[i].number_of_nodes_in_the_layer;
+        // Also easy, the columns are just the number of nodes in the next layer (this is just a concequence of graph theory, just take a look at the example model graph)
+        size_t columns = test_model->model_layers[i+1].number_of_nodes_in_the_layer;
+        print_matrix_double(test_model->model_weights[i], rows, columns);
     }
 
     Prompt test_prompt = init_prompt(4);
@@ -124,7 +135,7 @@ void test_calculate_output(void){
 }
 
 int main(){
-    test_init_model();
+    //test_init_model();
     test_inference_engine();
     //test1();
 

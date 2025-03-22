@@ -357,7 +357,8 @@ Output calculate_output(Prompt* prompt, Model* model){
             fprintf(stderr, "Error in %s: memory allocation error. 'output.layer_outputs[%zu]' is NULL.\n", __func__, i);
             return empty_output();
         }
-        for (size_t j; j < model->model_layers[i].number_of_nodes_in_the_layer; j++){
+        DEBUG_PRINT("Processing values trough nodes, the number of nodes in this layer is %zu", model->model_layers[i].number_of_nodes_in_the_layer);
+        for (size_t j = 0; j < model->model_layers[i].number_of_nodes_in_the_layer; j++){
             /** 2) register output of each node into the output array */
             double input_to_node = output.layer_inputs[i][j] + model->model_layers[i].layer_array_of_nodes[j].bias; // variable to enhance code readability (input + bias)
             output.layer_outputs[i][j] = model->model_layers[i].layer_array_of_nodes[j].activation(input_to_node);
