@@ -86,11 +86,15 @@ void test_inference_engine(){
     const size_t number_of_layers = 3;
     const size_t number_of_nodes_per_layer = 4;
     const char   name[11] = "test model\0";
+    /* Or you could also use a dinamically allocated array
+    char* name = malloc(strlen("test model") + 1);
+    if(name == NULL){fprintf(stderr, "Error in [%s:%s:%d]: failed to allocate memory for the name!\n", __FILE__, __func__, __LINE__);}
+    */
     activation_function test_activation = myLinear;
     threshold_function test_threshold = myThresholdFunc;
 
     double*** test_weights = create_FF_model_matrices(number_of_layers, number_of_nodes_per_layer);
-    Model* test_model = init_model(&name, number_of_layers, test_weights, number_of_nodes_per_layer, test_activation, test_threshold);
+    Model* test_model = init_model(name, number_of_layers, test_weights, number_of_nodes_per_layer, test_activation, test_threshold);
     if (!test_model){fprintf(stderr,
         "Error in %s: init_model returned NULL pointer.\n",
         __func__);
@@ -98,9 +102,11 @@ void test_inference_engine(){
     }
 
     Prompt test_prompt = init_prompt(4);
+    /*
     for(size_t i = 0; i < number_of_nodes_per_layer; i++){
        test_prompt.data[i] = (double)5;
     }
+    */
     Output test_output = calculate_output(&test_prompt, test_model);
     printf("Output is\n");
     print_output(&test_output);
