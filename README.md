@@ -115,8 +115,8 @@ This section provides an overview of the key files in this library and explains 
 - **Usage:**  
   Developers can use `main.c` as a starting point to experiment with the library. In a production environment, you might replace or exclude this file to integrate the library into your own projects.
 
-### `settings.h`
-**Under contruction: this section will be surely updated in the future**
+### `settings.h`   (**Under contruction: this section will be surely updated in the future**)
+
 - **Purpose:**  
   Provides a centralized location for global settings, compiler macros, type definitions, and other configurable parameters used throughout the project.
 
