@@ -25,9 +25,9 @@ The tests I've done during the development are integrated within the `Tests` fol
 
 ---
 
-## Build
+## Building the project
 
-To build the project, ensure you have [GNU Make](https://www.gnu.org/software/make/) and GCC installed on your system. Follow the steps below:
+This project uses a Makefile. Ensure you have [GNU Make](https://www.gnu.org/software/make/) and GCC installed on your system. Follow the steps below:
 
 1. **Clone the Repository**
 
@@ -95,6 +95,29 @@ To build the project, ensure you have [GNU Make](https://www.gnu.org/software/ma
      ```
 
    After updating the `Makefile`, run `make` again to build the project with the new files.
+
+---
+
+## File Structure
+
+This section provides an overview of the key files in this library and explains their roles. You can use this guide to navigate and understand how each file contributes to the project.
+
+### `main.c`
+
+- **Purpose:**  
+  Serves as the primary entry point for the library. (as it contains the only `main()` function of the library)
+
+- **Details:**  
+  - It includes all header and source files in the library.
+  - Mainly used for test and demonstration purposes, it also contains some sample test functions to demonstrate the library's functionality.
+  - You may uncomment the provided test routines to see immediate output and behavior just for reference or curiosity (^_^)
+  
+- **Usage:**  
+  Developers can use `main.c` as a starting point to experiment with the library. In a production environment, you might replace or exclude this file to integrate the library into your own projects.
+
+### `settings.h`
+**Under contruction: this section will be surely updated in the future**
+This file contains various settings and tweaks in the model. Like compiler macros that enable debug messages / alter the inner workings of the model / enable specific functions. Or typedefs that need to be easily accessible to whoever is editing the code and need to be unified across all files. 
 
 ---
 
