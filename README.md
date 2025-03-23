@@ -117,7 +117,24 @@ This section provides an overview of the key files in this library and explains 
 
 ### `settings.h`
 **Under contruction: this section will be surely updated in the future**
-This file contains various settings and tweaks in the model. Like compiler macros that enable debug messages / alter the inner workings of the model / enable specific functions. Or typedefs that need to be easily accessible to whoever is editing the code and need to be unified across all files. 
+- **Purpose:**  
+  Provides a centralized location for global settings, compiler macros, type definitions, and other configurable parameters used throughout the project.
+
+- **Key Features:**
+  - **Debug Configuration:**  
+    - `DEBUG` macro controls whether debug logging is enabled.  
+    - `DEBUG_PRINT` macro prints file and line information when debug mode is active.
+  - **Additional Flags:**  
+    - `VERBOSE` toggles more detailed debugging messages.  
+    - `autoMode` switches between automatic and manual training modes.  
+    - `MORE` includes or excludes optional code paths deemed non-essential but potentially useful.
+  - **Unified Typedefs:**  
+    - `Bool` enum provides a simple, project-wide boolean convention (`TRUE = 1`, `FALSE = 0`).
+
+- **Usage:**
+  - Include `settings.h` in any file that needs these macros, flags, or type definitions.
+  - Adjust the macro values in `settings.h` to customize debugging verbosity, enable or disable features, and unify project-wide data types.
+  - Expect ongoing additions or modifications to this file as the project evolves.
 
 ---
 
