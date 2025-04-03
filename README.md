@@ -97,6 +97,27 @@ This project uses a Makefile. Ensure you have [GNU Make](https://www.gnu.org/sof
    After updating the `Makefile`, run `make` again to build the project with the new files.
 
 ---
+## Enabling / Disabling Debug verbosity and features
+The project uses the header file `settings.h` to manage settings and the enabling or disabling of features.
+The majority of things are handled at compile time using `Defines`, so that the excluded features wont inlfuence the performance negatively and will make the executable lighter. Also enhancing the overall understandability of the code.
+Here is a list of the modifiable settings:
+
+### bool enum
+This enum allows for a fast and reliable definition of the bool type, across all files.
+The use of this enum is used instead of the inclusion of the stdbool library to allow for standard library free compilation.
+Can be useful mostly for code readability purposes.
+
+### DEBUG
+If set to 1, then all the debug messages will be printed.
+Also enabling the definition of an "ad hoc" DEBUG_PRINT function.
+Note: since debug messages need to be printed, the standard library `stdlib` will be included, if you would like to not include any libraries, you should not use this function
+
+### MORE
+If set to 1, certain portion of the code will be added.
+These aren't necessary for the normal operation of the code, nor they should be considered as a mean to "making the program more able" or more "complete".
+This macro is intended to add other "in code" tools for courious developers that would like to modify the code.
+
+---
 
 ## File Structure
 
