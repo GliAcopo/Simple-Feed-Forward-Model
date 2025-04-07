@@ -18,7 +18,7 @@ HEADERS    = matrix_functions.h model_computational_functions.h node_functions.h
 
 # Object Files
 OBJ_MATRIX = matrix_functions.o
-OBJ_MODEL  = model_functions.o
+OBJ_MODEL  = model_computational_functions.o
 OBJ_MAIN   = main.o
 OBJ_NODE   = node_functions.o
 
