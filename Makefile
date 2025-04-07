@@ -10,11 +10,11 @@ TARGET     = main.a.out
 # Source Files
 SRC_MAIN   = main.c
 SRC_MATRIX = matrix_functions.c
-SRC_MODEL  = model_functions.c
+SRC_MODEL  = model_computational_functions.c
 SRC_NODE   = node_functions.c
 
 # Header Files
-HEADERS    = matrix_functions.h model_functions.h settings.h node_functions.h
+HEADERS    = matrix_functions.h model_computational_functions.h node_functions.h settings.h
 
 # Object Files
 OBJ_MATRIX = matrix_functions.o
