@@ -26,12 +26,9 @@ typedef enum Bool{
 #ifdef DEBUG
     #include <stdio.h>
     #define DEBUG_PRINT(fmt, ...) \
-        fprintf(stderr, "[%s:%d] " fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+        fprintf(stderr, "[%s:%s:%d] " fmt "\n", __FILE__, __func__, __LINE__, ##__VA_ARGS__)
 #else
     #define DEBUG_PRINT(fmt, ...)
 #endif
-
-
-
 
 #endif
