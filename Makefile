@@ -11,16 +11,16 @@ TARGET     = main.a.out
 SRC_MAIN   = main.c
 SRC_MATRIX = matrix_functions.c
 SRC_MODEL  = model_computational_functions.c
-SRC_NODE   = node_functions.c
+SRC_NODE   = data_structs_and_methods_definitions.c
 
 # Header Files
-HEADERS    = matrix_functions.h model_computational_functions.h node_functions.h settings.h
+HEADERS    = matrix_functions.h model_computational_functions.h data_structs_and_methods_definitions.h settings.h
 
 # Object Files
 OBJ_MATRIX = matrix_functions.o
 OBJ_MODEL  = model_computational_functions.o
 OBJ_MAIN   = main.o
-OBJ_NODE   = node_functions.o
+OBJ_NODE   = data_structs_and_methods_definitions.o
 
 # Default Target
 all: $(TARGET)
@@ -42,7 +42,7 @@ main.o: $(SRC_MAIN) $(HEADERS)
 	$(CC) $(CFLAGS) -c $(SRC_MAIN)
 
 # Compile main.c to main.o
-node_functions.o: $(SRC_NODE) $(HEADERS)
+data_structs_and_methods_definitions.o: $(SRC_NODE) $(HEADERS)
 	$(CC) $(CFLAGS) -c $(SRC_NODE)
 
 # Clean Build Artifacts

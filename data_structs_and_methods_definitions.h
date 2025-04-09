@@ -1,5 +1,5 @@
-#ifndef NODE_FUNCTIONS_H
-#define NODE_FUNCTIONS_H
+#ifndef data_structs_and_methods_definitions_H
+#define data_structs_and_methods_definitions_H
 
 #include <stddef.h> // for size_t
 
@@ -169,4 +169,4 @@ void print_output(Output* pointer_to_output);
 
 /*                     -+-+-+-+-+-+-+-+-+-+-+- END STRUCT OUTPUT -+-+-+-+-+-+-+-+-+-+-+- */
 
-#endif // NODE_FUNCTIONS_H
+#endif // data_structs_and_methods_definitions_H

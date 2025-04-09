@@ -1,5 +1,5 @@
 #include "settings.h"
-#include "node_functions.h"
+#include "data_structs_and_methods_definitions.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <stddef.h>

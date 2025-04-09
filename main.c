@@ -32,7 +32,7 @@ typedef struct {
 #include "settings.h"
 #include "matrix_functions.h"
 #include "model_computational_functions.h"
-#include "node_functions.h"
+#include "data_structs_and_methods_definitions.h"
 
 /**
  * @brief function to test the new functions
