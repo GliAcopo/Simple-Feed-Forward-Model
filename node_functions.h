@@ -164,7 +164,6 @@ typedef struct Output{
 
 //                                          FUNCTION PROTOTYPES
 Output empty_output(void);
-Output calculate_output(Prompt* prompt, Model* model);
 void print_output(Output* pointer_to_output);
 //                                         END FUNCTION PROTOTYPES
 
