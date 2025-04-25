@@ -1,10 +1,10 @@
 #include "settings.h"
 #include "data_structs_and_methods_definitions.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <stddef.h>
-#include <math.h>
-#include <string.h>
+// #include <stdlib.h>
+// #include <stdio.h>
+// #include <stddef.h>
+// #include <math.h>
+// #include <string.h>
 
 /* -+-+-+-+-+-+-+-+-+-+-+- THRESHOLD AND ACTIVATION FUNCTIONS -+-+-+-+-+-+-+-+-+-+-+- */
 
@@ -48,7 +48,7 @@ ErrorCode free_Node(Node* node)
 {
     // Check for NULL first
     if (!node) {
-        fprintf(stderr,
+        DEBUG_PRINT(
                 "Error in %s: argument passed as NULL pointer. 'node = %p'.\n",
                 __func__, (void*)node);
         return ERROR_NULL_POINTER_AS_PARAMETER;
@@ -93,8 +93,7 @@ Layer create_layer(size_t number_of_nodes_in_the_layer,
     // Allocate space for the nodes
     layer.layer_array_of_nodes = malloc(number_of_nodes_in_the_layer * sizeof(Node));
     if (layer.layer_array_of_nodes == NULL) {
-        fprintf(stderr,
-            "Error in %s: Failed to allocate layer_array_of_nodes. 'layer.layer_array_of_nodes = %p'.\n",
+        DEBUG_PRINT("Error in %s: Failed to allocate layer_array_of_nodes. 'layer.layer_array_of_nodes = %p'.\n",
             __func__, (void*)layer.layer_array_of_nodes);
         Layer empty = {0};
         return empty;
@@ -139,7 +138,7 @@ Layer init_layer(int layer_number, Node * array_of_nodes_present_in_the_layer, d
 Model* create_model(const char* name, Layer* model_layers, double*** model_weights) {
     Model* model = malloc(sizeof(Model));
     if (!model) {
-        fprintf(stderr, "Allocation error\n");
+        DEBUG_PRINT("Allocation error\n");
         return NULL;
     }
     // Initialize fields
