@@ -18,12 +18,17 @@ typedef enum Bool
     FALSE = 0,
 } Bool;
 
-#define DEBUG 1       // Variables that enables all the debug messages. Setting the variable to 1 will automatically include stdio.h
-#define VERBOSE FALSE // This variable will trigger *way more* debug messages if activated
-#define autoMode TRUE // This variable is in boolean logic, and is used for the choice between auto training and standard training.
-#define MORE FALSE    // This variable basically implements extra code that is deemed redundant. But may come in handy.
+#define DEBUG TRUE             // Variables that enables all the debug messages. Setting the variable to 1 will automatically include stdio.h
+#define VERBOSE FALSE       // This variable will trigger *way more* debug messages if activated
+#define autoMode TRUE       // This variable is in boolean logic, and is used for the choice between auto training and standard training.
+#define MORE FALSE          // This variable basically implements extra code that is deemed redundant. But may come in handy.
+#define ASSIGN_MODEL_NAME TRUE // Allows for the assignation of model names to models, but requires the include of `#include <string.h>` for the `strcpy()` function
 
-#ifdef DEBUG
+#if ASSIGN_MODEL_NAME
+#include <string.h>
+#endif
+
+#if DEBUG
 #include <stdio.h>
 #define DEBUG_PRINT(fmt, ...) \
     fprintf(stderr, "[%s:%s:%d] " fmt "\n", __FILE__, __func__, __LINE__, ##__VA_ARGS__)

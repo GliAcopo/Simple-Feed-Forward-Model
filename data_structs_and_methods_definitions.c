@@ -4,7 +4,6 @@
 // #include <stdio.h>
 // #include <stddef.h>
 // #include <math.h>
-// #include <string.h>
 
 /* -+-+-+-+-+-+-+-+-+-+-+- THRESHOLD AND ACTIVATION FUNCTIONS -+-+-+-+-+-+-+-+-+-+-+- */
 
@@ -148,11 +147,13 @@ Model* create_model(const char* name, Layer* model_layers, double*** model_weigh
     // Allocate space for the name and copy it
     model->model_name = malloc(strlen(name) + 1);
     if (!model->model_name) {
-        fprintf(stderr, "Allocation error\n");
+        DEBUG_PRINT("Allocation error\n");
         free(model);  // Clean up partially allocated model
         return NULL;
     }
+#if ASSIGN_MODEL_NAME
     strcpy(model->model_name, name);
+    #endif
 
     return model;
 }
