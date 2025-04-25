@@ -102,9 +102,9 @@ This project uses a Makefile. Ensure you have [GNU Make](https://www.gnu.org/sof
 ## Enabling / Disabling Debug verbosity ; Changing the data types ; Disabling the need for dependencies
 The project uses the header file `settings.h` to manage settings and the enabling or disabling of features.
 
-The majority of things are handled at compile time using `Defines`, so that the excluded features wont inlfuence the performance negatively and will make the executable lighter. Also enhancing the overall understandability of the code.
+The majority of things are handled at compile time using `Defines`, so that the excluded features won't inlfuence the performance negatively and will make the executable lighter. Also enhancing the overall understandability of the code.
 
-* **Dependency-free compilation**: Set `DEBUG` to `0` to disable all debug messages and prevent inclusion of `<stdio.h>` or other standard libraries. (compile dependency free!)
+* **Dependency-free compilation**: Set `DEBUG` to `0` to disable all debug messages and prevent inclusion of `<stdio.h>`; tweak the data types so that there is no need to include any other library and then you are good to go!. (compile dependency free!)
 
 * **Flexible data types**: Customize the data types the program uses at compile time directly in settings.h to match your platform or precision needs.
   * parameter type (ffw_param_t), 
