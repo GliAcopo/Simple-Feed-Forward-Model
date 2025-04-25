@@ -7,6 +7,8 @@ This project is still a work in progress, many things will be subject to change 
 
 This repository hosts a library for constructing, training, evaluating, and managing feed-forward neural network models, all implemented in C. This project leverages graph theory and adjacency matrices to represent the network's structure, providing a more "theoretical" perspective on neural network design.
 
+The project allows for dependency-free compilation, as well as data types defined at compile time. See below for details.
+
 ## Key Features
 
 - **Model Construction:** Define neural networks as graphs using nodes and weighted edges, represented through adjacency matrices.
@@ -97,10 +99,18 @@ This project uses a Makefile. Ensure you have [GNU Make](https://www.gnu.org/sof
    After updating the `Makefile`, run `make` again to build the project with the new files.
 
 ---
-## Enabling / Disabling Debug verbosity and features
+## Enabling / Disabling Debug verbosity ; Changing the data types ; Disabling the need for dependencies
 The project uses the header file `settings.h` to manage settings and the enabling or disabling of features.
 
 The majority of things are handled at compile time using `Defines`, so that the excluded features wont inlfuence the performance negatively and will make the executable lighter. Also enhancing the overall understandability of the code.
+
+* **Dependency-free compilation**: Set `DEBUG` to `0` to disable all debug messages and prevent inclusion of `<stdio.h>` or other standard libraries. (compile dependency free!)
+
+* **Flexible data types**: Customize the data types the program uses at compile time directly in settings.h to match your platform or precision needs.
+  * parameter type (ffw_param_t), 
+  * structure counters (ucount_t/count_t), 
+  * and loop indices (uindex_t/index_t) 
+  
 
 Here is a list of the modifiable settings:
 
